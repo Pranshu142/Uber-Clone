@@ -63,5 +63,5 @@ riderSchema.pre("save", async function (next) {
   }
 });
 
-const riderModel = mongoose.model("Rider", riderSchema);
+const riderModel = mongoose.model("riders", riderSchema);
 export default riderModel;

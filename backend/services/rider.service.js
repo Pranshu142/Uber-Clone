@@ -1,23 +1,27 @@
 import riderModel from "../models/rider.models.js";
 
-const createRider = ({ firstname, lastname, email, password }) => {
+const createRider = async ({ firstname, lastname, email, password }) => {
   if (!firstname || !lastname || !email || !password) {
-    throw new Error("all fields are required");
+    throw new Error("All fields are required");
   }
 
   try {
     const rider = new riderModel({
       fullname: {
-        firstname: firstname,
-        lastname: lastname,
+        firstname,
+        lastname,
       },
-      email: email,
-      password: password,
+      email,
+      password,
     });
 
-    return rider;
+    // Save the rider to the database
+    await rider.save();
+
+    return rider; // Return the saved rider object
   } catch (error) {
-    console.log(error);
+    console.error("Error creating rider:", error);
+    throw new Error("Error while creating rider");
   }
 };
 
