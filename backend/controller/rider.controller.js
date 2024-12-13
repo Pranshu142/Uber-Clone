@@ -1,6 +1,7 @@
 import riderModel from "../models/rider.models.js";
 import createRider from "../services/rider.service.js";
 import { validationResult } from "express-validator";
+import bcrypt from "bcrypt";
 
 export default async (req, res) => {
   const errors = validationResult(req);
@@ -18,14 +19,14 @@ export default async (req, res) => {
 
   try {
     // Hash the password
-    const hashPassword = await riderModel.hashPassword(password);
+    // const hashPassword = await riderModel.hashPassword(password);
 
     // Create the rider
     const rider = await createRider({
       firstname: fullname.firstname,
       lastname: fullname.lastname,
       email,
-      password: hashPassword,
+      password,
     });
 
     // Generate token
@@ -49,7 +50,7 @@ export const loginRider = async (req, res, next) => {
   if (!user) {
     return res.status(401).json({ errors: "invalid email or password" });
   }
-
+  console.log(await bcrypt.compare(password, user.password), user.password);
   const isMatch = await user.comparePassword(password);
   console.log(isMatch);
   if (!isMatch) {

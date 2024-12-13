@@ -46,10 +46,10 @@ riderSchema.methods.comparePassword = async function (password) {
 };
 
 // Hash Password
-riderSchema.statics.hashPassword = async function (password) {
-  const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(password, salt);
-};
+// riderSchema.statics.hashPassword = async function (password) {
+//   const salt = await bcrypt.genSalt(10);
+//   return await bcrypt.hash(password, salt);
+// };
 
 // // Pre Save Hook for Password Hashing
 riderSchema.pre("save", async function (next) {

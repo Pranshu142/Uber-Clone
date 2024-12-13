@@ -34,6 +34,6 @@ router.post(
   loginRider
 );
 
-router.get("/profile", authRiders, riderProfile);
+// router.get("/profile", authRiders, riderProfile);
 
 export default router;
