@@ -1,7 +1,8 @@
 import riderModel from "../models/rider.models.js";
-import createRider from "../services/rider.service.js";
+import createRider, {
+  createBlackListTokens,
+} from "../services/rider.service.js";
 import { validationResult } from "express-validator";
-import bcrypt from "bcrypt";
 
 export default async (req, res) => {
   const errors = validationResult(req);
@@ -12,15 +13,13 @@ export default async (req, res) => {
   // Extract fields
   const { fullname, email, password } = req.body;
 
-  const userAlreadyExists = riderModel.findOne({ email: email });
-  if (!userAlreadyExists) {
+  const userAlreadyExists = await riderModel.findOne({ email: email });
+  console.log(userAlreadyExists);
+  if (userAlreadyExists) {
     return res.status(400).json({ errors: "User already exists" });
   }
 
   try {
-    // Hash the password
-    // const hashPassword = await riderModel.hashPassword(password);
-
     // Create the rider
     const rider = await createRider({
       firstname: fullname.firstname,
@@ -45,22 +44,32 @@ export const loginRider = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
   const { email, password } = req.body;
-  const user = await riderModel.findOne({ email: email }).select("+password");
-  console.log(user);
-  if (!user) {
+  const rider = await riderModel.findOne({ email: email }).select("+password");
+
+  if (!rider) {
     return res.status(401).json({ errors: "invalid email or password" });
   }
-  console.log(await bcrypt.compare(password, user.password), user.password);
-  const isMatch = await user.comparePassword(password);
+  //   console.log(await bcrypt.compare(password, user.password), user.password);
+  const isMatch = await rider.comparePassword(password);
   console.log(isMatch);
   if (!isMatch) {
     return res.status(401).json({ errors: "invalid email or password" });
   }
 
-  const token = await user.generateToken();
+  const token = await rider.generateToken();
   res.cookie("token", token);
 
   res.status(200).json({ message: "Rider login successful" });
 };
 
-export const riderProfile = (req, res, next) => {};
+export const riderProfile = (req, res, next) => {
+  res.status(200).json({ message: "rider profile display" });
+};
+
+export const logout = async (req, res, next) => {
+  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+
+  await createBlackListTokens({ token });
+  res.clearCookie("token");
+  res.status(200).json({ message: "rider logout successful" });
+};

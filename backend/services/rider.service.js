@@ -1,4 +1,5 @@
 import riderModel from "../models/rider.models.js";
+import blacklistedToken from "../models/blacklistedToken.models.js";
 
 const createRider = async ({ firstname, lastname, email, password }) => {
   if (!firstname || !lastname || !email || !password) {
@@ -22,6 +23,18 @@ const createRider = async ({ firstname, lastname, email, password }) => {
   } catch (error) {
     console.error("Error creating rider:", error);
     throw new Error("Error while creating rider");
+  }
+};
+
+export const createBlackListTokens = async ({ token }) => {
+  if (!token) throw new Error("please provide a valid token");
+  try {
+    const blacklistToken = new blacklistedToken({ token });
+    await blacklistToken.save();
+    // return blacklistToken;
+  } catch (err) {
+    console.error("Error creating blacklist token:", err);
+    res.status(500).json({ error: "Error creating blacklist token" });
   }
 };
 
