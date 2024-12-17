@@ -1,10 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+// import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { CaptainDataContext } from "../context/CaptainContext.jsx";
+import axios from "axios";
+
+// import
 const CaptainLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [captainData, setCaptainData] = useState({});
+  const navigate = useNavigate();
+  const { setCaptain } = useContext(CaptainDataContext);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -14,14 +19,30 @@ const CaptainLogin = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setCaptainData({
+    const captainData = {
       email: email,
       password: password,
-    });
-    console.log(captainData);
+    };
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/captains/login`,
+        captainData
+      );
+      if (response.status === 200) {
+        const data = response.data;
+        // console.log("🚀 ~ handleSubmit ~ data:", data, data.token);
+        setCaptain(data.captain);
+        localStorage.setItem("captain-token", data.token);
+        navigate("/captain-home");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error: " + e.message);
+    }
   };
+
   return (
     <div className="p-7 flex flex-col justify-between items-center h-screen">
       <div>
@@ -57,7 +78,7 @@ const CaptainLogin = () => {
         </form>
         <p className="text-center">
           Want to join?{" "}
-          <Link to="/captainSignup" className="text-blue-500">
+          <Link to="/captain-signup" className="text-blue-500">
             Register as a captain
           </Link>
         </p>

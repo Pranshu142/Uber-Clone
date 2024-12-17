@@ -1,20 +1,44 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import StartPage from "./pages/StartPage";
-import CaptainLogin from "./pages/CaptainLogin";
-import CaptainSignup from "./pages/CaptainSignup";
-import UserLogin from "./pages/UserLogin";
-import UserSignup from "./pages/UserSignup";
+import StartPage from "./pages/StartPage.jsx";
+import CaptainLogin from "./pages/CaptainLogin.jsx";
+import CaptainSignup from "./pages/CaptainSignup.jsx";
+import RiderLogin from "./pages/RiderLogin.jsx";
+import RiderSignup from "./pages/RiderSignup.jsx";
+import CaptainHome from "./pages/CaptainHome.jsx";
+import RiderHome from "./pages/RiderHome.jsx";
+import RiderProtectedRoutes from "./pages/RiderProtectedRoutes.jsx";
+import RiderLogout from "./pages/RiderLogout.jsx";
+import CaptainLogout from "./pages/CaptainLogout.jsx";
+import CaptainProtectedRoutes from "./pages/CaptainProtectedRoutes.jsx";
 
 const App = () => {
   return (
     <div>
       <Routes>
         <Route path="/" element={<StartPage />} />
-        <Route path="/login" element={<UserLogin />} />
-        <Route path="/signup" element={<UserSignup />} />
-        <Route path="/captainLogin" element={<CaptainLogin />} />
-        <Route path="/captainSignup" element={<CaptainSignup />} />
+        <Route path="/signup" element={<RiderSignup />} />
+        <Route path="/login" element={<RiderLogin />} />
+        <Route
+          path="/rider-home"
+          element={
+            <RiderProtectedRoutes>
+              <RiderHome />
+            </RiderProtectedRoutes>
+          }
+        />
+        <Route path="/rider/logout" element={<RiderLogout />} />
+        <Route path="/captain-signup" element={<CaptainSignup />} />
+        <Route path="/captain-login" element={<CaptainLogin />} />
+        <Route
+          path="/captain-home"
+          element={
+            <CaptainProtectedRoutes>
+              <CaptainHome />
+            </CaptainProtectedRoutes>
+          }
+        />
+        <Route path="/captain/logout" element={<CaptainLogout />} />
       </Routes>
     </div>
   );

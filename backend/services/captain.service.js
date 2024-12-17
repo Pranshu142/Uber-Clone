@@ -51,14 +51,17 @@ const createCaptain = async ({
 };
 
 export const createBlackListTokens = async ({ token }) => {
-  if (!token) throw new Error("please provide a valid token");
   try {
-    const blacklistToken = new blacklistedToken({ token });
-    await blacklistToken.save();
-    // return blacklistToken;
-  } catch (err) {
-    console.error("Error creating blacklist token:", err);
-    res.status(500).json({ error: "Error creating blacklist token" });
+    // Use upsert to avoid duplicate errors
+    await blacklistedToken.updateOne(
+      { token }, // Filter
+      { token }, // Update
+      { upsert: true } // Insert if not exists
+    );
+    console.log("Token blacklisted successfully.");
+  } catch (error) {
+    console.error("Error creating blacklist token:", error);
   }
 };
+
 export default createCaptain;

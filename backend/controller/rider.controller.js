@@ -1,3 +1,4 @@
+import { request } from "express";
 import riderModel from "../models/rider.models.js";
 import createRider, {
   createBlackListTokens,
@@ -29,9 +30,9 @@ export default async (req, res) => {
     });
 
     // Generate token
-    const token = rider.generateToken();
-
-    res.status(201).json({ rider, token });
+    const token = await rider.generateToken();
+    res.cookie("token", token);
+    res.status(200).json({ rider, token });
   } catch (error) {
     console.error("Error registering rider:", error);
     res.status(500).json({ error: "Failed to register rider" });
@@ -43,31 +44,40 @@ export const loginRider = async (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+
   const { email, password } = req.body;
   const rider = await riderModel.findOne({ email: email }).select("+password");
 
   if (!rider) {
-    return res.status(401).json({ errors: "invalid email or password" });
+    return res.status(401).json({ errors: "Invalid email or password" });
   }
-  //   console.log(await bcrypt.compare(password, user.password), user.password);
+
   const isMatch = await rider.comparePassword(password);
-  console.log(isMatch);
   if (!isMatch) {
-    return res.status(401).json({ errors: "invalid email or password" });
+    return res.status(401).json({ errors: "Invalid email or password" });
   }
 
   const token = await rider.generateToken();
-  res.cookie("token", token);
 
-  res.status(200).json({ message: "Rider login successful" });
+  // Set the cookie
+  res.cookie("token", token, {
+    httpOnly: true,
+  });
+
+  console.log(req.cookies.token);
+
+  res.status(200).json({ message: "Rider login successfully", rider, token });
 };
 
 export const riderProfile = (req, res, next) => {
-  res.status(200).json({ message: "rider profile display" });
+  res.status(200).json({ message: "rider profile display", rider: req.rider });
 };
 
 export const logout = async (req, res, next) => {
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(403).json({ message: "Invalid token" });
+  }
 
   await createBlackListTokens({ token });
   res.clearCookie("token");

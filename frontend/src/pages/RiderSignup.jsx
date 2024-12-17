@@ -1,13 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { RiderDataContext } from "../context/RiderContext.jsx";
+import axios from "axios";
 
-const UserSignup = () => {
+const RiderSignup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const [userData, setUserData] = useState({});
+  const { rider, setRider } = React.useContext(RiderDataContext);
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -22,23 +25,43 @@ const UserSignup = () => {
   const handleLastnameChange = (e) => {
     setLastname(e.target.value);
   };
-
-  const handleSubmit = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setUserData({
+    const newUser = {
       fullname: {
-        firstname: firstname,
-        lastname: lastname,
+        firstname,
+        lastname,
       },
-      email: email,
-      password: password,
-    });
+      email,
+      password,
+    };
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/riders/register`,
+        newUser,
+        { withCredentials: true }
+      );
+      if (response.status === 200) {
+        const data = response.data;
+        setRider(data.rider);
+        localStorage.setItem("token", data.token);
+        navigate("/rider-home");
+      }
+    } catch (error) {
+      console.error(
+        "Error during signup:",
+        error.response?.data || error.message
+      );
+      alert("Signup failed. Please try again.");
+    }
+
     setEmail("");
     setPassword("");
     setFirstname("");
     setLastname("");
-    console.log(userData);
   };
+
   return (
     <div className="p-7 flex flex-col justify-between items-center h-screen">
       <div>
@@ -47,7 +70,11 @@ const UserSignup = () => {
           src="https://brandeps.com/logo-download/U/Uber-logo-02.png"
           alt="Uber logo"
         />
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            submitHandler(e);
+          }}
+        >
           <h3 className="font-bold text-lg mb-2">What&apos;s your name</h3>
           <div className="flex gap-5 mb-2">
             <input
@@ -90,7 +117,10 @@ const UserSignup = () => {
             onChange={handlePasswordChange}
             required
           />
-          <button className="bg-black text-white text-lg w-full rounded px-2 py-2 font-semibold mt-5">
+          <button
+            type="submit"
+            className="bg-black text-white text-lg w-full rounded px-2 py-2 font-semibold mt-5"
+          >
             Create Account
           </button>
         </form>
@@ -110,4 +140,4 @@ const UserSignup = () => {
   );
 };
 
-export default UserSignup;
+export default RiderSignup;

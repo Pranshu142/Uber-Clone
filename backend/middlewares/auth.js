@@ -17,8 +17,8 @@ export default async function riderAuth(req, res, next) {
 
   try {
     const decode = jwt.verify(token, process.env.JWT_SECRET);
-    const user = riderModel.findById({ _id: decode._id });
-    req.user = user;
+    const rider = await riderModel.findById({ _id: decode.id });
+    req.rider = rider;
     return next();
   } catch (e) {
     console.error(e);
@@ -29,18 +29,18 @@ export default async function riderAuth(req, res, next) {
 export const captainAuth = async (req, res, next) => {
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
   if (!token) {
-    return res.status(401).json({ error: "unauthorized" });
+    return res.status(401).json({ error: "unauthorized token" });
   }
 
   const isBlacklisted = await blacklistedTokenModel.findOne({ token });
 
-  if (!isBlacklisted) {
-    return res.status(401).json({ error: "unauthorized" });
+  if (isBlacklisted) {
+    return res.status(401).json({ error: "unauthorized black" });
   }
 
   try {
     const decode = jwt.verify(token, process.env.JWT_SECRET);
-    const captain = captainModel.findById({ _id: decode._id });
+    const captain = await captainModel.findById(decode.id);
     req.captain = captain;
     return next();
   } catch (e) {

@@ -30,7 +30,7 @@ export const createBlackListTokens = async ({ token }) => {
   if (!token) throw new Error("please provide a valid token");
   try {
     const blacklistToken = new blacklistedToken({ token });
-    await blacklistToken.save();
+    // await blacklistToken.save();
     // return blacklistToken;
   } catch (err) {
     console.error("Error creating blacklist token:", err);

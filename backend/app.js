@@ -30,6 +30,6 @@ app.use(expressStatic(join(__dirname, "public")));
 
 // app.use("/", indexRouter);
 app.use("/riders", ridersRouter);
-app.use("/captains",captainsRouter);
+app.use("/captains", captainsRouter);
 
 export default app;

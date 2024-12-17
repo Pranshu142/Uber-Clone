@@ -34,7 +34,7 @@ export default async (req, res) => {
     // Generate token
     const token = captain.generateToken();
 
-    res.status(201).json({ captain, token });
+    res.status(200).json({ captain, token });
   } catch (error) {
     console.error("Error registering captain:", error);
     res.status(500).json({ error: "Failed to register captain" });
@@ -62,9 +62,9 @@ export const loginCaptain = async (req, res, next) => {
   }
 
   const token = await captain.generateToken();
-  res.cookie("token", token);
+  res.cookie("captain-token", token);
 
-  res.status(200).json({ message: "captain login successful" });
+  res.status(200).json({ message: "captain login successful", captain, token });
 };
 
 export const logout = async (req, res, next) => {
@@ -74,7 +74,9 @@ export const logout = async (req, res, next) => {
   res.clearCookie("token");
   res.status(200).json({ message: "captain logout successful" });
 };
-
 export const captainProfile = (req, res, next) => {
-  res.status(200).json({ message: "captain profile display" });
+  res
+    .status(200)
+    .json({ message: "captain logged in successfully", captain: req.captain });
+  // console.log("🚀 ~ captainProfile ~ req.captain:", req.captain);
 };
