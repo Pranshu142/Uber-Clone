@@ -9,7 +9,7 @@ const RiderSignup = () => {
   const [password, setPassword] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const { rider, setRider } = React.useContext(RiderDataContext);
+  const {  setRider } = React.useContext(RiderDataContext);
   const navigate = useNavigate();
 
   const handleEmailChange = (e) => {

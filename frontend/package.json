@@ -10,12 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.1",
     "@tailwindcss/vite": "^4.0.0-beta.6",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^7.0.2"
+    "gsap": "^3.12.5",
+    "leaflet": "^1.9.4",
+    "react": "^19.0.0-rc.1",
+    "react-dom": "^19.0.0-rc.1",
+    "react-leaflet": "^5.0.0",
+    "react-router-dom": "^7.0.2",
+    "remixicon": "^4.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
