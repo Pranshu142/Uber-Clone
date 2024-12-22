@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { RiderDataContext } from "../context/RiderContext.jsx";
 import axios from "axios";
 import { useContext, useEffect } from "react";
+import PropTypes from "prop-types";
 
 const RiderProtectedRoutes = ({ children }) => {
   const navigate = useNavigate();
@@ -49,6 +50,9 @@ const RiderProtectedRoutes = ({ children }) => {
 
   // Show loading indicator if rider verification is ongoing
   return token ? <>{children}</> : <div>Loading...</div>;
+};
+RiderProtectedRoutes.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default RiderProtectedRoutes;
