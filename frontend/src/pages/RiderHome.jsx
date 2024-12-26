@@ -39,7 +39,6 @@ const LocationMarker = () => {
 const RiderHome = () => {
   const mapRef = useRef(null);
   const panelRef = useRef(null);
-
   const closeRef = useRef(null);
   const waitingCaptainRef = useRef(null);
   const rideTypePannelRef = useRef(null);
@@ -47,6 +46,7 @@ const RiderHome = () => {
   const closeRideTypePannelRef = useRef(null);
   const closeConfirmRidePannelRef = useRef(null);
   const lookingForCaptainRef = useRef(null);
+
   const [panelOpen, setPanelOpen] = useState(false);
   const [confirmRidePannel, setConfirmRidePannel] = useState(false);
   const [waitingCaptainPannel, setWaitingCaptainPannel] = useState(false);
@@ -55,27 +55,21 @@ const RiderHome = () => {
 
   useGSAP(() => {
     if (panelOpen) {
-      // Animate panel sliding up
       gsap.to(panelRef.current, {
         height: "73%",
         duration: 0.3,
         ease: "power3.out",
         padding: "10px",
       });
-      gsap.to(closeRef.current, {
-        opacity: "1",
-      });
+      gsap.to(closeRef.current, { opacity: "1" });
     } else {
-      // Animate panel sliding down
       gsap.to(panelRef.current, {
         height: "0%",
         padding: "0",
         duration: 0.3,
         ease: "power3.in",
       });
-      gsap.to(closeRef.current, {
-        opacity: "0",
-      });
+      gsap.to(closeRef.current, { opacity: "0" });
     }
   }, [panelOpen]);
 
@@ -83,23 +77,17 @@ const RiderHome = () => {
     if (rideTypePannelOpen) {
       gsap.to(rideTypePannelRef.current, {
         height: "85vh",
-
         duration: 0.5,
         ease: "power3.in",
       });
-      gsap.to(closeRideTypePannelRef.current, {
-        opacity: "1",
-      });
+      gsap.to(closeRideTypePannelRef.current, { opacity: "1" });
     } else {
       gsap.to(rideTypePannelRef.current, {
         height: "0",
         duration: 0.5,
-
         ease: "power3.in",
       });
-      gsap.to(closeRideTypePannelRef.current, {
-        opacity: "0",
-      });
+      gsap.to(closeRideTypePannelRef.current, { opacity: "0" });
     }
   }, [rideTypePannelOpen]);
 
@@ -107,25 +95,20 @@ const RiderHome = () => {
     if (confirmRidePannel) {
       gsap.to(confirmRidePannelRef.current, {
         height: "85vh",
-
         duration: 0.5,
         ease: "power3.in",
       });
-      gsap.to(closeConfirmRidePannelRef.current, {
-        opacity: "1",
-      });
+      gsap.to(closeConfirmRidePannelRef.current, { opacity: "1" });
     } else {
-      gsap.to(closeConfirmRidePannelRef.current, {
-        opacity: "0",
-      });
+      gsap.to(closeConfirmRidePannelRef.current, { opacity: "0" });
       gsap.to(confirmRidePannelRef.current, {
         height: "0",
-
         duration: 0.5,
         ease: "power3.in",
       });
     }
   }, [confirmRidePannel]);
+
   useGSAP(() => {
     if (lookingForCaptainPannel) {
       gsap.to(lookingForCaptainRef.current, {
@@ -157,20 +140,22 @@ const RiderHome = () => {
       });
     }
   }, [waitingCaptainPannel]);
+
   return (
-    <div className="relative h-screen w-screen">
+    <div className="relative h-screen w-screen overflow-hidden">
       <img
-        className="w-14 ml-12 mb-5 absolute z-[900]"
+        className="w-10 md:w-14 ml-4 md:ml-12 mb-3 md:mb-5 absolute z-[900] top-2 md:top-4"
         src="https://brandeps.com/logo-download/U/Uber-logo-02.png"
         alt="Uber logo"
       />
+
       {/* Map */}
       <div ref={mapRef} className="h-full w-full">
         <MapContainer
           center={[51.505, -0.09]}
           zoom={13}
           scrollWheelZoom={false}
-          className="h-screen w-screen mb-0 pb-0"
+          className="h-screen w-screen"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -181,42 +166,40 @@ const RiderHome = () => {
       </div>
 
       {/* Booking Form */}
-      <div className=" absolute justify-end flex flex-col h-screen top-0  w-screen  z-[1001]">
-        <div className="h-[27%]  p-2 bg-white relative w-full ">
-          <div className="flex justify-between items-center ">
-            <h3 className="text-4xl font-bold mb-5">Find a ride</h3>
+      <div className="absolute justify-end flex flex-col h-screen top-0 w-screen z-[1001]">
+        <div className="h-[27%] p-2 md:p-4 bg-white relative w-full">
+          <div className="flex justify-between items-center px-2 md:px-4">
+            <h3 className="text-2xl md:text-4xl font-bold mb-3 md:mb-5">
+              Find a ride
+            </h3>
             <i
               ref={closeRef}
-              className="ri-arrow-down-s-line ri-2x opacity-0"
-              onClick={() => {
-                setPanelOpen(false);
-              }}
-            ></i>
+              className="ri-arrow-down-s-line text-2xl md:text-3xl opacity-0 cursor-pointer"
+              onClick={() => setPanelOpen(false)}
+            />
           </div>
-          <form className="space-y-4 relative  ">
-            <i className="ri-record-circle-line absolute top-[13%] left-4"></i>
-            <div className="absolute w-0 h-[50px]  border-2  border-gray-700 rounded-full top-[32%] left-[5%]"></div>
 
-            <i className="ri-map-pin-fill absolute bottom-[2%] left-4"></i>
+          <form className="space-y-3 md:space-y-4 relative px-3 md:px-5">
+            <i className="ri-record-circle-line absolute top-[13%] left-6 md:left-8 text-lg md:text-xl" />
+            <div className="absolute w-0 h-[40px] md:h-[50px] border-2 border-gray-400 rounded-full top-[32%] left-[5%] md:left-[6%]" />
+            <i className="ri-map-pin-fill absolute bottom-[2%] left-6 md:left-8 text-lg md:text-xl" />
+
             <input
-              className="w-full border-2 rounded-lg px-10 py-4 text-lg"
+              className="w-full border-2 rounded-lg px-8 md:px-10 py-3 md:py-4 text-base md:text-lg"
               type="text"
               placeholder="Enter your pickup location"
-              onClick={() => {
-                setPanelOpen(true);
-              }}
+              onClick={() => setPanelOpen(true)}
             />
             <input
-              className="w-full border-2 rounded-lg px-10 py-4 text-lg"
+              className="w-full border-2 rounded-lg px-8 md:px-10 py-3 md:py-4 text-base md:text-lg"
               type="text"
               placeholder="Enter your drop-off location"
-              onClick={() => {
-                setPanelOpen(true);
-              }}
+              onClick={() => setPanelOpen(true)}
             />
           </form>
         </div>
-        {/* Expanding Panel */}
+
+        {/* Panels */}
         <div
           ref={panelRef}
           className="w-full bg-white h-0 p-0 overflow-y-auto relative"
@@ -226,6 +209,7 @@ const RiderHome = () => {
             setRideTypePannelOpen={setRideTypePannelOpen}
           />
         </div>
+
         <div
           ref={rideTypePannelRef}
           className="absolute h-0 bg-white w-full px-0 py-0 overflow-y-auto"
@@ -236,9 +220,10 @@ const RiderHome = () => {
             setConfirmRidePannel={setConfirmRidePannel}
           />
         </div>
+
         <div
           ref={confirmRidePannelRef}
-          className="absolute    h-0 bg-white w-full px-0 py-0 overflow-y-auto"
+          className="absolute h-0 bg-white w-full px-0 py-0 overflow-y-auto"
         >
           <ConfirmRidePannel
             setLookingForCaptainPannel={setLookingForCaptainPannel}
@@ -246,14 +231,16 @@ const RiderHome = () => {
             closeConfirmRidePannelRef={closeConfirmRidePannelRef}
           />
         </div>
+
         <div
           ref={lookingForCaptainRef}
-          className="fixed h-0 bg-white w-full px-0 py-0overflow-y-auto"
+          className="fixed h-0 bg-white w-full px-0 py-0 overflow-y-auto"
         >
           <LookingForCaptain
             setLookingForCaptainPannel={setLookingForCaptainPannel}
           />
         </div>
+
         <div
           ref={waitingCaptainRef}
           className="fixed h-0 bg-white w-full px-0 py-0 overflow-y-auto"

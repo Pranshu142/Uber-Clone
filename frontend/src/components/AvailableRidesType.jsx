@@ -28,31 +28,42 @@ const AvailableRidesType = ({
     <div className="flex flex-col gap-5 items-center justify-start px-3 py-5">
       <i
         ref={closeRideTypePannelRef}
-        className="ri-arrow-down-s-line ri-2x opacity-0"
+        className="ri-arrow-down-s-line ri-2x opacity-0 cursor-pointer"
         onClick={() => {
           setRideTypePannelOpen(false);
         }}
       ></i>
-      <h3 className="font-bold text-3xl my-3 w-full">Available Rides</h3>
+      <h3 className="font-bold text-2xl sm:text-3xl my-3 w-full text-center">
+        Available Rides
+      </h3>
       {ridesType.map((item, index) => {
         return (
           <div
             key={index}
-            className="flex items-center justify-between w-full gap-2 font-semibold text-md border-2 px-2 py-3 rounded-3xl overflow-y-auto"
+            className="flex flex-col sm:flex-row items-center justify-between w-full gap-4 sm:gap-2 font-semibold text-md border-2 px-4 py-3 rounded-3xl"
             onClick={() => {
               setConfirmRidePannel(true);
             }}
           >
-            <img src={`${item.imageSRC}`} className="h-24 w-32" />
-            <div className="flex flex-col items-center justify-center  w-full">
-              <div className="flex gap-2 w-full">
+            {/* Ride Image */}
+            <img
+              src={`${item.imageSRC}`}
+              alt={`${item.name}`}
+              className="h-20 w-20 sm:h-24 sm:w-32 object-cover"
+            />
+            {/* Ride Details */}
+            <div className="flex flex-col items-center sm:items-start justify-center w-full text-center sm:text-left">
+              <div className="flex gap-2 items-center">
                 <span>{item.name}</span>
                 <i className="ri-user-3-fill"></i>
-                <span> 10 </span>
+                <span>10</span>
               </div>
-              <span className="text-gray-400">10 mins away</span>
+              <span className="text-gray-400 text-sm">10 mins away</span>
             </div>
-            <span className="w-full text-center">$20</span>
+            {/* Ride Cost */}
+            <span className="w-full sm:w-auto text-center sm:text-right text-lg sm:text-xl">
+              $20
+            </span>
           </div>
         );
       })}
