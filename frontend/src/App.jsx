@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { Route, Routes } from "react-router-dom";
 import StartPage from "./pages/StartPage.jsx";
 import CaptainLogin from "./pages/CaptainLogin.jsx";
@@ -11,6 +11,7 @@ import RiderProtectedRoutes from "./pages/RiderProtectedRoutes.jsx";
 import RiderLogout from "./pages/RiderLogout.jsx";
 import CaptainLogout from "./pages/CaptainLogout.jsx";
 import CaptainProtectedRoutes from "./pages/CaptainProtectedRoutes.jsx";
+import RideStart from "./pages/RideStart.jsx";
 
 const App = () => {
   return (
@@ -24,6 +25,14 @@ const App = () => {
           element={
             <RiderProtectedRoutes>
               <RiderHome />
+            </RiderProtectedRoutes>
+          }
+        />
+        <Route
+          path="/riding"
+          element={
+            <RiderProtectedRoutes>
+              <RideStart />
             </RiderProtectedRoutes>
           }
         />

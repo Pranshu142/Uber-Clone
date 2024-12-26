@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 export const RiderDataContext = React.createContext();
 
@@ -16,6 +17,9 @@ const RiderContext = ({ children }) => {
       {children}
     </RiderDataContext.Provider>
   );
+};
+RiderContext.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default RiderContext;

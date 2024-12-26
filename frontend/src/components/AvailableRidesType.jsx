@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 const AvailableRidesType = ({
   setRideTypePannelOpen,
   closeRideTypePannelRef,
-  setPanelOpen,
+  setConfirmRidePannel,
 }) => {
   const ridesType = [
     {
@@ -25,13 +25,12 @@ const AvailableRidesType = ({
     },
   ];
   return (
-    <div className="flex flex-col gap-10 items-center justify-start">
+    <div className="flex flex-col gap-5 items-center justify-start px-3 py-5">
       <i
         ref={closeRideTypePannelRef}
         className="ri-arrow-down-s-line ri-2x opacity-0"
         onClick={() => {
           setRideTypePannelOpen(false);
-          setPanelOpen(true);
         }}
       ></i>
       <h3 className="font-bold text-3xl my-3 w-full">Available Rides</h3>
@@ -39,7 +38,10 @@ const AvailableRidesType = ({
         return (
           <div
             key={index}
-            className="flex items-center justify-between w-full gap-2 font-semibold text-md border-2 px-2 py-3 rounded-3xl"
+            className="flex items-center justify-between w-full gap-2 font-semibold text-md border-2 px-2 py-3 rounded-3xl overflow-y-auto"
+            onClick={() => {
+              setConfirmRidePannel(true);
+            }}
           >
             <img src={`${item.imageSRC}`} className="h-24 w-32" />
             <div className="flex flex-col items-center justify-center  w-full">
@@ -60,7 +62,7 @@ const AvailableRidesType = ({
 AvailableRidesType.propTypes = {
   setRideTypePannelOpen: PropTypes.func.isRequired,
   closeRideTypePannelRef: PropTypes.object.isRequired,
-  setPanelOpen: PropTypes.object.isRequired,
+  setConfirmRidePannel: PropTypes.func.isRequired,
 };
 
 export default AvailableRidesType;

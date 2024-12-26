@@ -12,6 +12,9 @@ import "leaflet/dist/leaflet.css";
 import { gsap } from "gsap";
 import LocationSearchPanel from "../components/LocationSearchPanel.jsx";
 import AvailableRidesType from "../components/AvailableRidesType.jsx";
+import ConfirmRidePannel from "../components/ConfirmRidePannel.jsx";
+import WaitingCaptainPannel from "../components/WaitingCaptainPannel.jsx";
+import LookingForCaptain from "../components/LookingForCaptain.jsx";
 
 const LocationMarker = () => {
   const [position, setPosition] = useState(null);
@@ -36,18 +39,26 @@ const LocationMarker = () => {
 const RiderHome = () => {
   const mapRef = useRef(null);
   const panelRef = useRef(null);
+
   const closeRef = useRef(null);
+  const waitingCaptainRef = useRef(null);
   const rideTypePannelRef = useRef(null);
-  const [panelOpen, setPanelOpen] = useState(false);
-  const [rideTypePannelOpen, setRideTypePannelOpen] = useState(false);
+  const confirmRidePannelRef = useRef(null);
   const closeRideTypePannelRef = useRef(null);
+  const closeConfirmRidePannelRef = useRef(null);
+  const lookingForCaptainRef = useRef(null);
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [confirmRidePannel, setConfirmRidePannel] = useState(false);
+  const [waitingCaptainPannel, setWaitingCaptainPannel] = useState(false);
+  const [lookingForCaptainPannel, setLookingForCaptainPannel] = useState(false);
+  const [rideTypePannelOpen, setRideTypePannelOpen] = useState(false);
 
   useGSAP(() => {
     if (panelOpen) {
       // Animate panel sliding up
       gsap.to(panelRef.current, {
-        height: "70%",
-        duration: 0.5,
+        height: "73%",
+        duration: 0.3,
         ease: "power3.out",
         padding: "10px",
       });
@@ -59,7 +70,7 @@ const RiderHome = () => {
       gsap.to(panelRef.current, {
         height: "0%",
         padding: "0",
-        duration: 0.5,
+        duration: 0.3,
         ease: "power3.in",
       });
       gsap.to(closeRef.current, {
@@ -71,7 +82,8 @@ const RiderHome = () => {
   useGSAP(() => {
     if (rideTypePannelOpen) {
       gsap.to(rideTypePannelRef.current, {
-        height: "60vh",
+        height: "85vh",
+
         duration: 0.5,
         ease: "power3.in",
       });
@@ -82,6 +94,7 @@ const RiderHome = () => {
       gsap.to(rideTypePannelRef.current, {
         height: "0",
         duration: 0.5,
+
         ease: "power3.in",
       });
       gsap.to(closeRideTypePannelRef.current, {
@@ -90,6 +103,60 @@ const RiderHome = () => {
     }
   }, [rideTypePannelOpen]);
 
+  useGSAP(() => {
+    if (confirmRidePannel) {
+      gsap.to(confirmRidePannelRef.current, {
+        height: "85vh",
+
+        duration: 0.5,
+        ease: "power3.in",
+      });
+      gsap.to(closeConfirmRidePannelRef.current, {
+        opacity: "1",
+      });
+    } else {
+      gsap.to(closeConfirmRidePannelRef.current, {
+        opacity: "0",
+      });
+      gsap.to(confirmRidePannelRef.current, {
+        height: "0",
+
+        duration: 0.5,
+        ease: "power3.in",
+      });
+    }
+  }, [confirmRidePannel]);
+  useGSAP(() => {
+    if (lookingForCaptainPannel) {
+      gsap.to(lookingForCaptainRef.current, {
+        height: "85vh",
+        duration: 0.5,
+        ease: "power3.in",
+      });
+    } else {
+      gsap.to(lookingForCaptainRef.current, {
+        height: "0",
+        duration: 0.5,
+        ease: "power3.in",
+      });
+    }
+  }, [lookingForCaptainPannel]);
+
+  useGSAP(() => {
+    if (waitingCaptainPannel) {
+      gsap.to(waitingCaptainRef.current, {
+        height: "85vh",
+        duration: 0.5,
+        ease: "power3.in",
+      });
+    } else {
+      gsap.to(waitingCaptainRef.current, {
+        height: "0",
+        duration: 0.5,
+        ease: "power3.in",
+      });
+    }
+  }, [waitingCaptainPannel]);
   return (
     <div className="relative h-screen w-screen">
       <img
@@ -98,12 +165,12 @@ const RiderHome = () => {
         alt="Uber logo"
       />
       {/* Map */}
-      <div ref={mapRef}>
+      <div ref={mapRef} className="h-full w-full">
         <MapContainer
           center={[51.505, -0.09]}
           zoom={13}
           scrollWheelZoom={false}
-          className="h-screen w-screen"
+          className="h-screen w-screen mb-0 pb-0"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -114,8 +181,8 @@ const RiderHome = () => {
       </div>
 
       {/* Booking Form */}
-      <div className="flex flex-col justify-end absolute top-0 w-full h-screen z-[1000]">
-        <div className="h-[30%] relative p-2 bg-white transition-all duration-500">
+      <div className=" absolute justify-end flex flex-col h-screen top-0  w-screen  z-[1001]">
+        <div className="h-[27%]  p-2 bg-white relative w-full ">
           <div className="flex justify-between items-center ">
             <h3 className="text-4xl font-bold mb-5">Find a ride</h3>
             <i
@@ -126,11 +193,11 @@ const RiderHome = () => {
               }}
             ></i>
           </div>
-          <form className="space-y-4 relative">
-            <i className="ri-record-circle-line absolute top-2 left-4"></i>
-            <div className="absolute w-0 h-[70px]  border-2  border-gray-700 rounded-full top-[23%] left-6"></div>
+          <form className="space-y-4 relative  ">
+            <i className="ri-record-circle-line absolute top-[13%] left-4"></i>
+            <div className="absolute w-0 h-[50px]  border-2  border-gray-700 rounded-full top-[32%] left-[5%]"></div>
 
-            <i className="ri-map-pin-fill absolute bottom-[0%] left-4"></i>
+            <i className="ri-map-pin-fill absolute bottom-[2%] left-4"></i>
             <input
               className="w-full border-2 rounded-lg px-10 py-4 text-lg"
               type="text"
@@ -150,7 +217,10 @@ const RiderHome = () => {
           </form>
         </div>
         {/* Expanding Panel */}
-        <div ref={panelRef} className="w-full bg-white h-0 p-0 overflow-y-auto">
+        <div
+          ref={panelRef}
+          className="w-full bg-white h-0 p-0 overflow-y-auto relative"
+        >
           <LocationSearchPanel
             setPannelOpen={setPanelOpen}
             setRideTypePannelOpen={setRideTypePannelOpen}
@@ -158,12 +228,38 @@ const RiderHome = () => {
         </div>
         <div
           ref={rideTypePannelRef}
-          className="fixed h-0 bg-white w-full py-3 px-2 overflow-y-auto"
+          className="absolute h-0 bg-white w-full px-0 py-0 overflow-y-auto"
         >
           <AvailableRidesType
             setRideTypePannelOpen={setRideTypePannelOpen}
             closeRideTypePannelRef={closeRideTypePannelRef}
-            setPanelOpen={setPanelOpen}
+            setConfirmRidePannel={setConfirmRidePannel}
+          />
+        </div>
+        <div
+          ref={confirmRidePannelRef}
+          className="absolute    h-0 bg-white w-full px-0 py-0 overflow-y-auto"
+        >
+          <ConfirmRidePannel
+            setLookingForCaptainPannel={setLookingForCaptainPannel}
+            setConfirmRidePannel={setConfirmRidePannel}
+            closeConfirmRidePannelRef={closeConfirmRidePannelRef}
+          />
+        </div>
+        <div
+          ref={lookingForCaptainRef}
+          className="fixed h-0 bg-white w-full px-0 py-0overflow-y-auto"
+        >
+          <LookingForCaptain
+            setLookingForCaptainPannel={setLookingForCaptainPannel}
+          />
+        </div>
+        <div
+          ref={waitingCaptainRef}
+          className="fixed h-0 bg-white w-full px-0 py-0 overflow-y-auto"
+        >
+          <WaitingCaptainPannel
+            setWaitingCaptainPannel={setWaitingCaptainPannel}
           />
         </div>
       </div>
