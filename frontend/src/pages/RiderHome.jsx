@@ -46,7 +46,6 @@ const RiderHome = () => {
   const closeRideTypePannelRef = useRef(null);
   const closeConfirmRidePannelRef = useRef(null);
   const lookingForCaptainRef = useRef(null);
-
   const [panelOpen, setPanelOpen] = useState(false);
   const [confirmRidePannel, setConfirmRidePannel] = useState(false);
   const [waitingCaptainPannel, setWaitingCaptainPannel] = useState(false);

@@ -1,30 +1,20 @@
-import React from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { RiderDataContext } from "../context/RiderContext.jsx";
 import axios from "axios";
+import { RiderDataContext } from "../context/RiderContext.jsx";
 
 const RiderSignup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
-  const {  setRider } = React.useContext(RiderDataContext);
+  const { setRider } = useContext(RiderDataContext);
   const navigate = useNavigate();
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleInputChange = (e, setter) => {
+    setter(e.target.value);
   };
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-  const handleFirstnameChange = (e) => {
-    setFirstname(e.target.value);
-  };
-  const handleLastnameChange = (e) => {
-    setLastname(e.target.value);
-  };
   const submitHandler = async (e) => {
     e.preventDefault();
     const newUser = {
@@ -63,78 +53,79 @@ const RiderSignup = () => {
   };
 
   return (
-    <div className="p-7 flex flex-col justify-between items-center h-screen">
-      <div>
+    <div className="p-7 flex flex-col justify-between items-center h-screen bg-gray-50">
+      <div className="w-full max-w-md">
+        {/* Logo */}
         <img
-          className="w-14 ml-5 mb-5"
+          className="w-14 mx-auto mb-5"
           src="https://brandeps.com/logo-download/U/Uber-logo-02.png"
           alt="Uber logo"
         />
-        <form
-          onSubmit={(e) => {
-            submitHandler(e);
-          }}
-        >
-          <h3 className="font-bold text-lg mb-2">What&apos;s your name</h3>
-          <div className="flex gap-5 mb-2">
+
+        {/* Signup Form */}
+        <form onSubmit={submitHandler}>
+          <h3 className="font-bold text-lg mb-3">What&apos;s your name?</h3>
+          <div className="flex gap-3 mb-4">
             <input
-              className="w-1/2 border px-2 py-2 rounded  text-lg placeholder:text-sm"
+              className="w-1/2 border px-3 py-2 rounded-lg text-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
               type="text"
               placeholder="First Name"
-              name="First Name"
               value={firstname}
-              onChange={handleFirstnameChange}
+              onChange={(e) => handleInputChange(e, setFirstname)}
               required
             />
             <input
-              className="w-1/2 border px-2 py-2 rounded text-lg placeholder:text-sm"
+              className="w-1/2 border px-3 py-2 rounded-lg text-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
               type="text"
               placeholder="Last Name"
-              name="Last Name"
               value={lastname}
-              onChange={handleLastnameChange}
+              onChange={(e) => handleInputChange(e, setLastname)}
               required
             />
           </div>
 
-          <h3 className="font-bold text-lg mb-2">Enter your email</h3>
+          <h3 className="font-bold text-lg mb-3">Enter your email</h3>
           <input
-            className="w-full border px-2 py-2 rounded mb-2 text-lg placeholder:text-sm"
+            className="w-full border px-3 py-2 rounded-lg mb-4 text-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
             type="email"
             placeholder="email@example.com"
-            name="email"
             value={email}
-            onChange={handleEmailChange}
+            onChange={(e) => handleInputChange(e, setEmail)}
             required
           />
-          <h3 className="font-bold text-lg mb-2">Enter your password</h3>
+
+          <h3 className="font-bold text-lg mb-3">Enter your password</h3>
           <input
-            className="w-full border px-2 py-2 rounded mb-2 text-lg placeholder:text-sm"
+            className="w-full border px-3 py-2 rounded-lg mb-4 text-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
             type="password"
             placeholder="Enter your password"
-            name="password"
             value={password}
-            onChange={handlePasswordChange}
+            onChange={(e) => handleInputChange(e, setPassword)}
             required
           />
+
           <button
             type="submit"
-            className="bg-black text-white text-lg w-full rounded px-2 py-2 font-semibold mt-5"
+            className="bg-black text-white text-lg w-full rounded-lg px-4 py-3 font-semibold hover:bg-gray-800 transition-all"
           >
             Create Account
           </button>
         </form>
-        <p className="text-center">
-          Already have a account{" "}
-          <Link to="/login" className="text-blue-400">
+
+        {/* Login Redirect */}
+        <p className="text-center mt-4 text-sm">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500 hover:underline">
             Login
           </Link>
         </p>
       </div>
-      <p className="text-justify font-light text-sm mt-3 ">
-        By proceeding, you consent to get calls, WhatsApp or SMS messages,
+
+      {/* Footer Disclaimer */}
+      <p className="text-center font-light text-xs mt-3 px-5">
+        By proceeding, you consent to get calls, WhatsApp, or SMS messages,
         including by automated dialer, from Uber and its affiliates to the
-        number provided. Text &quot;STOP&quot; to 89203 to opt out.
+        number provided. Text &quot;STOP&quot; to 89203 to opt-out.
       </p>
     </div>
   );

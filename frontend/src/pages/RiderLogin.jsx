@@ -1,21 +1,16 @@
-import React from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { RiderDataContext } from "../context/RiderContext.jsx";
 import axios from "axios";
+import { RiderDataContext } from "../context/RiderContext.jsx";
 
 const UserLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { setRider } = React.useContext(RiderDataContext);
+  const { setRider } = useContext(RiderDataContext);
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+  const handleInputChange = (e, setter) => {
+    setter(e.target.value);
   };
 
   const submitHandler = async (e) => {
@@ -31,73 +26,79 @@ const UserLogin = () => {
       );
       if (response.status === 200) {
         const data = response.data;
-        // console.log(data.rider.fullname.firstname);
         setRider(data.rider);
-        // console.log(rider);
         localStorage.setItem("token", data.token);
         navigate("/rider-home");
       }
     } catch (error) {
       console.error(
-        "Error during signup:",
+        "Error during login:",
         error.response?.data || error.message
       );
-      alert("Signup failed. Please try again.");
+      alert("Login failed. Please try again.");
     }
   };
 
   return (
-    <div className="p-7 flex flex-col justify-between items-center h-screen">
-      <div>
+    <div className="p-7 flex flex-col justify-between items-center h-screen bg-gray-50">
+      <div className="w-full max-w-md">
+        {/* Logo */}
         <img
-          className="w-14 ml-5 mb-5"
+          className="w-14 mx-auto mb-5"
           src="https://brandeps.com/logo-download/U/Uber-logo-02.png"
           alt="Uber logo"
         />
-        <form
-          onSubmit={(e) => {
-            submitHandler(e);
-          }}
-        >
-          <h3 className="font-bold text-lg mb-2">What&apos;s your email</h3>
+
+        {/* Login Form */}
+        <form onSubmit={submitHandler}>
+          <h3 className="font-bold text-lg mb-3">What&apos;s your email?</h3>
           <input
-            className="w-full border px-2 py-2 rounded mb-7 text-lg placeholder:text-sm"
+            className="w-full border px-3 py-2 rounded-lg mb-5 text-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
             type="email"
             placeholder="email@example.com"
-            name="email"
+            aria-label="Email"
             value={email}
-            onChange={handleEmailChange}
+            onChange={(e) => handleInputChange(e, setEmail)}
             required
           />
-          <h3 className="font-bold text-lg mb-2">Enter your password</h3>
+
+          <h3 className="font-bold text-lg mb-3">Enter your password</h3>
           <input
-            className="w-full border px-2 py-2 rounded mb-7 text-lg placeholder:text-sm"
+            className="w-full border px-3 py-2 rounded-lg mb-5 text-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
             type="password"
             placeholder="Enter your password"
-            name="password"
+            aria-label="Password"
             value={password}
-            onChange={handlePasswordChange}
+            onChange={(e) => handleInputChange(e, setPassword)}
             required
           />
+
           <button
             type="submit"
-            className="bg-black text-white text-lg w-full rounded px-2 py-2 font-semibold"
+            className="bg-black text-white text-lg w-full rounded-lg px-4 py-3 font-semibold hover:bg-gray-800 transition-all"
           >
             Login
           </button>
         </form>
-        <p className="text-center">
+
+        {/* Signup Redirect */}
+        <p className="text-center mt-4 text-sm">
           New here?{" "}
-          <Link to="/signup" className="text-blue-400">
+          <Link
+            to="/signup"
+            className="text-blue-500 hover:underline transition-all"
+          >
             Create an account
           </Link>
         </p>
       </div>
+
+      {/* Captain Login */}
       <Link
         to="/captain-login"
-        className="bg-purple-500 flex justify-center items-center text-white text-lg w-full rounded px-2 py-2 font-semibold mb-2"
+        className="bg-purple-500 text-white text-lg w-full max-w-md rounded-lg px-4 py-3 font-semibold mt-5 hover:bg-purple-600 transition-all"
       >
-        Login in as Captain
+        Login as Captain
       </Link>
     </div>
   );
