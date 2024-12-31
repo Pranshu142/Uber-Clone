@@ -12,6 +12,7 @@ import RiderLogout from "./pages/RiderLogout.jsx";
 import CaptainLogout from "./pages/CaptainLogout.jsx";
 import CaptainProtectedRoutes from "./pages/CaptainProtectedRoutes.jsx";
 import RideStart from "./pages/RideStart.jsx";
+import CaptainRidingStart from "./pages/CaptainRidingStart.jsx";
 
 const App = () => {
   return (
@@ -47,6 +48,7 @@ const App = () => {
             </CaptainProtectedRoutes>
           }
         />
+        <Route path="/captain-riding" element={<CaptainRidingStart />} />
         <Route path="/captain/logout" element={<CaptainLogout />} />
       </Routes>
     </div>

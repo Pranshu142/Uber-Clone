@@ -1,7 +1,8 @@
-import { LogOut } from "lucide-react";
+import { LogOut, SquarePlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const CaptainLogoutButton = () => {
+const CaptainLogoutButton = ({ setRidePopUpPanelOpen, ridePopUpPanelOpen }) => {
   const navigate = useNavigate();
   const logoutHandler = () => {
     // Add your logout logic here
@@ -16,8 +17,24 @@ const CaptainLogoutButton = () => {
         absoluteStrokeWidth
         onClick={() => logoutHandler()}
       />
+      <SquarePlus
+        color="#000000"
+        absoluteStrokeWidth
+        className=" bg-white absolute top-26 right-4 z-[1001]"
+        onClick={() => {
+          if (ridePopUpPanelOpen) {
+            setRidePopUpPanelOpen(false);
+          } else {
+            setRidePopUpPanelOpen(true);
+          }
+        }}
+      />
     </div>
   );
+};
+CaptainLogoutButton.propTypes = {
+  setRidePopUpPanelOpen: PropTypes.func.isRequired,
+  ridePopUpPanelOpen: PropTypes.bool.isRequired,
 };
 
 export default CaptainLogoutButton;

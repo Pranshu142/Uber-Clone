@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -7,9 +7,12 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Clock, Gauge, NotepadTextDashed } from "lucide-react";
 import CaptainLogoutButton from "../components/CaptainLogoutButton";
-
+import CaptainDetails from "../components/CaptainDetails";
+import RideAcceptPopUp from "../components/RideAcceptPopUp";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import CaptainConfirmRide from "../components/CaptainConfirmRide";
 const LocationMarker = () => {
   const [position, setPosition] = useState(null);
   const map = useMapEvents({
@@ -29,10 +32,60 @@ const LocationMarker = () => {
     </Marker>
   );
 };
+
 const CaptainHome = () => {
+  const ridePopUp = useRef(null);
+  const CaptainConfirmRideRef = useRef(null);
+  const [CaptainConfirmRidePanelOpen, setCaptainConfirmRidePanelOpen] =
+    useState(false);
+  const [ridePopUpPanelOpen, setRidePopUpPanelOpen] = useState(false);
+
+  useGSAP(() => {
+    if (ridePopUpPanelOpen) {
+      gsap.to(ridePopUp.current, {
+        transform: "translateY(0)",
+
+        duration: 0.4,
+        ease: "power3.inOut",
+      });
+    } else {
+      gsap.to(ridePopUp.current, {
+        transform: "translateY(100%)",
+
+        duration: 0.4,
+        ease: "power3.inOut",
+      });
+    }
+  }, [ridePopUpPanelOpen]);
+  useGSAP(() => {
+    if (CaptainConfirmRidePanelOpen) {
+      gsap.to(CaptainConfirmRideRef.current, {
+        transform: "translateY(0 )",
+        height: "100vh",
+        duration: 0.4,
+        ease: "power3.inOut",
+      });
+    } else {
+      gsap.to(CaptainConfirmRideRef.current, {
+        transform: "translateY(100% )",
+        height: "0vh",
+
+        duration: 0.4,
+        ease: "power3.inOut",
+      });
+    }
+  }, [CaptainConfirmRidePanelOpen]);
+
   return (
     <div className="h-screen w-screen relative">
-      <CaptainLogoutButton className=" top-0 right-0 z-[1001]" />
+      {/* Logout Button */}
+      <CaptainLogoutButton
+        className="absolute top-4 right-4 z-[1001]"
+        setRidePopUpPanelOpen={setRidePopUpPanelOpen}
+        ridePopUpPanelOpen={ridePopUpPanelOpen}
+      />
+
+      {/* Map */}
       <div className="h-full w-full">
         <MapContainer
           center={[51.505, -0.09]}
@@ -47,73 +100,30 @@ const CaptainHome = () => {
           <LocationMarker />
         </MapContainer>
       </div>
-      <div className="captain-basic-ride-info absolute  bg-orange-100 h-[50vh] z-[1001] w-full bottom-0  flex flex-col gap-10 items-center px-3 py-5 rounded-t-4xl border-2  border-gray-400">
-        <div className="w-full flex justify-between items-center mt-5 px-3">
-          <div className="flex gap-5 items-center">
-            <div>
-              <img
-                src="https://media.smallbiztrends.com/2023/07/How-to-Become-an-Uber-Driver.png"
-                className="h-20 w-20 object-center object-cover rounded-full"
-              ></img>
-            </div>
-            <div>
-              <h3>
-                <span className="text-lg ">Driver Name</span>
-              </h3>
-              <h3>
-                <span className="text-base text-gray-400">Driver Level</span>
-              </h3>
-            </div>
-          </div>
-          <div>
-            <h3 className="w-full text-end text-lg ">₹60</h3>
-            <h3 className="w-full text-end text-lg text-gray-400">Earned</h3>
-          </div>
-        </div>
-        <div className="flex justify-between items-center w-full px-3 py-10  rounded-3xl border-2 border-red-300 shadow-md  shadow-gray-400 gap-3 bg-yellow-200 ">
-          <div className="flex  flex-col  items-center gap-3">
-            <div className="flex justify-center  ">
-              <Clock
-                color="black"
-                absoluteStrokeWidth
-                stroke="gray"
-                className="h-12 w-12"
-              />
-            </div>
-            <h3 className="text-3xl font-bold">10</h3>
-            <h3 className="mt-2 text-base text-gray-500 text-center">
-              Total time online
-            </h3>
-          </div>
-          <div className="flex flex-col justify-center items-center gap-3">
-            <div className="flex justify-center">
-              <Gauge
-                color="black"
-                absoluteStrokeWidth
-                stroke="gray"
-                className="h-12 w-12 "
-              />
-            </div>
-            <h3 className="text-3xl font-bold">30 Km</h3>
-            <h3 className="mt-2 text-base text-gray-500 text-center">
-              Total time online
-            </h3>
-          </div>
-          <div className="flex flex-col justify-center items-center gap-3">
-            <div className="flex justify-center">
-              <NotepadTextDashed
-                color="black"
-                absoluteStrokeWidth
-                stroke="gray"
-                className="h-12 w-12"
-              />
-            </div>
-            <h3 className="text-3xl font-bold">20</h3>
-            <h3 className="mt-2 text-base text-gray-500 text-center">
-              Total time online
-            </h3>
-          </div>
-        </div>
+
+      {/* Basic Ride Info */}
+      <div className="absolute bg-yellow-100 h-[50vh] z-[1001] w-full bottom-0 flex flex-col gap-10 items-center px-3 py-5 rounded-t-3xl border-2 border-gray-400 shadow-md">
+        <CaptainDetails />
+      </div>
+
+      {/* Ride Pop-Up */}
+      <div
+        ref={ridePopUp}
+        className="fixed w-full  bottom-0  translate-y-full   z-[1001] bg-yellow-100  shadow-lg flex flex-col gap-10 items-center px-3 py-5 rounded-t-3xl border-2 border-gray-400 "
+      >
+        <RideAcceptPopUp
+          setRidePopUpPanelOpen={setRidePopUpPanelOpen}
+          setCaptainConfirmRidePanelOpen={setCaptainConfirmRidePanelOpen}
+        />
+      </div>
+      <div
+        ref={CaptainConfirmRideRef}
+        className="fixed w-full  bottom-0  translate-y-full   z-[1002] bg-yellow-100  shadow-lg flex flex-col gap-10 items-center px-3 py-5 border-2 border-gray-400 "
+      >
+        <CaptainConfirmRide
+          setRidePopUpPanelOpen={setRidePopUpPanelOpen}
+          setCaptainConfirmRidePanelOpen={setCaptainConfirmRidePanelOpen}
+        />
       </div>
     </div>
   );
