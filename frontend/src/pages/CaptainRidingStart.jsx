@@ -123,21 +123,13 @@ const CaptainRidingStart = () => {
           <Coins className="h-6 w-6 text-gray-700 flex-shrink-0" />
           <h3 className="text-md sm:text-lg font-semibold">₹60</h3>
         </div>
-        <form className="w-full">
-          <input
-            className="w-full border-2 rounded-lg px-8 md:px-10 py-3 md:py-4 text-base md:text-lg bg-gray-200"
-            type="text"
-            placeholder="Enter your OTP"
-          />
-          <div className="flex items-center justify-center  w-full ">
-            <Link
-              to={"/captain-home"}
-              className="bg-green-300 flex justify-center items-center w-full  px-5 py-4 rounded-full mt-5 text-xl sm:text-2xl font-semibold active:border-2 active:border-black transition-all duration-200"
-            >
-              Finish Ride
-            </Link>
-          </div>
-        </form>
+
+        <Link
+          to={"/captain-home"}
+          className="bg-green-300 flex justify-center items-center w-full  px-5 py-4 rounded-full mt-5 text-xl sm:text-2xl font-semibold active:border-2 active:border-black transition-all duration-200"
+        >
+          Finish Ride
+        </Link>
       </div>
     </div>
   );
