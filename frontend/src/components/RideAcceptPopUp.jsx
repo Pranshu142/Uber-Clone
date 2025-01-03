@@ -1,7 +1,4 @@
-// import React from 'react'
-
 import { ChevronDown, Coins, MapPin, MapPinOff } from "lucide-react";
-
 import PropTypes from "prop-types";
 
 const RideAcceptPopUp = ({
@@ -9,66 +6,99 @@ const RideAcceptPopUp = ({
   setCaptainConfirmRidePanelOpen,
 }) => {
   return (
-    <>
-      <div className="flex justify-between items-center w-full">
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-bold mt-2 text-center sm:text-left">
-            New Ride Available!
-          </h2>
-        </div>
-        <ChevronDown className="h-7 w-10 opacity-1 cursor-pointer " />
-      </div>
-      <div className="w-full flex justify-between items-center  px-3">
-        <div className="flex gap-5 items-center">
-          <div>
-            <img
-              src="https://media.smallbiztrends.com/2023/07/How-to-Become-an-Uber-Driver.png"
-              className="h-20 w-20 object-center object-cover rounded-full"
-            ></img>
-          </div>
-          <div>
-            <h3>
-              <span className="text-lg ">Rider Name</span>
-            </h3>
-          </div>
-        </div>
-        <div>
-          <h3 className="w-full text-end text-lg ">Distance</h3>
-        </div>
+    <div className="w-full flex flex-col gap-4 min-w-[300px]">
+      {/* Header */}
+      <div className="container-1 flex justify-between items-center w-full">
+        <ChevronDown
+          className="h-7 w-7 cursor-pointer text-gray-500"
+          aria-label="Collapse"
+          onClick={() => setRidePopUpPanelOpen(false)}
+        />
+        <h2 className="text-2xl sm:text-3xl font-bold">New Ride Available!</h2>
       </div>
 
-      <div className="flex items-center gap-10 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 active:border-2 active:border-black w-full text-left transition-colors">
-        <MapPin className="h-6 w-6 text-gray-700 flex-shrink-0" />
-        <h3 className="text-md sm:text-lg font-semibold">Pickup Location</h3>
+      {/* Rider Information */}
+      <div className=" container-2 flex justify-between items-center px-3">
+        <div className=" sub-container-2 flex items-center gap-4">
+          <img
+            src="https://media.smallbiztrends.com/2023/07/How-to-Become-an-Uber-Driver.png"
+            alt="Rider"
+            className="h-16 w-16 rounded-full object-cover"
+          />
+          <div>
+            <h3 className="text-lg font-medium">Rider Name</h3>
+            <p className="text-sm text-gray-500">5 mins away</p>
+          </div>
+        </div>
+        <p className="text-lg font-semibold">2.5 km</p>
       </div>
-      <div className="flex items-center gap-10 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 active:border-2 active:border-black w-full text-left transition-colors">
-        <MapPinOff className="h-6 w-6 text-gray-700 flex-shrink-0" />
-        <h3 className="text-md sm:text-lg font-semibold">Drop Location</h3>
+
+      {/* Ride Details */}
+      <div className=" container-3 flex flex-col gap-3">
+        <RideDetail icon={<MapPin />} label="Pickup Location" />
+        <RideDetail icon={<MapPinOff />} label="Drop Location" />
+        <RideDetail icon={<Coins />} label="₹60" />
       </div>
-      <div className="flex items-center gap-10 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 active:border-2 active:border-black w-full text-left transition-colors">
-        <Coins className="h-6 w-6 text-gray-700 flex-shrink-0" />
-        <h3 className="text-md sm:text-lg font-semibold">₹60</h3>
-      </div>
-      <div className="flex items-center justify-between w-full ">
+
+      {/* Action Buttons */}
+      <div className="container-4 flex justify-between w-full mt-4">
         <button
-          className="bg-green-300  px-5 py-4 rounded-full mt-5 text-xl sm:text-2xl font-semibold active:border-2 active:border-black transition-all duration-200"
-          onClick={() => {
-            setCaptainConfirmRidePanelOpen(true);
-          }}
+          className="bg-black text-white px-5 py-3 rounded-full text-lg font-semibold transition-transform transform active:scale-95"
+          onClick={() => setCaptainConfirmRidePanelOpen(true)}
         >
           Accept Ride
         </button>
         <button
-          className="bg-orange-300 px-5 py-4 rounded-full mt-5 text-xl sm:text-2xl font-semibold active:border-2 active:border-black transition-all duration-200"
-          onClick={() => {
-            setRidePopUpPanelOpen(false);
-          }}
+          className="bg-gray-200 text-black px-5 py-3 rounded-full text-lg font-semibold transition-transform transform active:scale-95"
+          onClick={() => setRidePopUpPanelOpen(false)}
         >
           Cancel Ride
         </button>
       </div>
-    </>
+      <style>{`
+          @media (max-width: 340px) {
+            .container-1 {
+            flex-direction: column;
+              justify-content: center;
+              margin-bottom: 10px;
+            }
+            .sub-container-1 {
+              justify-content: center;
+              item-align: center;
+            }
+            .container-2 {
+            flex-direction: column;
+              justify-content: center;
+              item-align: center;
+            }
+            .sub-container-2{
+              justify-content: center;
+              flex-direction: column;
+              item-align: center;
+            }
+            .container-4 {
+            flex-direction: column;
+              item-align: center;
+              justify-content: center;
+              gap: 10px;
+            }
+          }
+          }
+        `}</style>
+    </div>
   );
+};
+
+const RideDetail = ({ icon, label }) => (
+  <div className="flex items-center gap-4 bg-gray-100 hover:bg-gray-200 px-4 py-3 rounded-xl transition-colors">
+    <span className="h-6 w-6 text-gray-700">{icon}</span>
+    <p className="text-md sm:text-lg font-medium">{label}</p>
+  </div>
+);
+
+RideDetail.propTypes = {
+  icon: PropTypes.element.isRequired,
+  label: PropTypes.string.isRequired,
 };
 
 RideAcceptPopUp.propTypes = {

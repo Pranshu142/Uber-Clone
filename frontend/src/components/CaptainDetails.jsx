@@ -1,78 +1,68 @@
-// import React from 'react'
-
 import { Clock, Gauge, NotepadTextDashed } from "lucide-react";
 
 const CaptainDetails = () => {
   return (
     <>
-      <div className="w-full flex justify-between items-center mt-5 px-3">
-        <div className="flex gap-5 items-center">
-          <div>
+      <div className="w-full px-4 py-5 h-full flex flex-col gap-6 overflow-y-auto">
+        {/* Driver Info */}
+        <div className=" top-container flex flex-wrap  justify-between items-center">
+          <div className="sub-container-1 flex flex-wrap gap-4 items-center">
             <img
               src="https://media.smallbiztrends.com/2023/07/How-to-Become-an-Uber-Driver.png"
-              className="h-20 w-20 object-center object-cover rounded-full"
-            ></img>
-          </div>
-          <div>
-            <h3>
-              <span className="text-lg ">Driver Name</span>
-            </h3>
-            <h3>
-              <span className="text-base text-gray-400">Driver Level</span>
-            </h3>
-          </div>
-        </div>
-        <div>
-          <h3 className="w-full text-end text-lg ">₹60</h3>
-          <h3 className="w-full text-end text-lg text-gray-400">Earned</h3>
-        </div>
-      </div>
-      <div className="flex justify-between items-center w-full px-3 py-10  rounded-3xl border-2 border-red-300 shadow-md  shadow-gray-400 gap-3 bg-yellow-200 ">
-        <div className="flex  flex-col  items-center gap-3">
-          <div className="flex justify-center  ">
-            <Clock
-              color="black"
-              absoluteStrokeWidth
-              stroke="gray"
-              strokeOpacity={0.77}
-              className="h-12 w-12"
+              alt="Driver Profile"
+              className="h-20 w-20 object-cover rounded-full shadow-md"
             />
+            <div>
+              <h3 className="text-lg font-semibold">Driver Name</h3>
+              <p className="text-sm text-gray-500">Driver Level</p>
+            </div>
           </div>
-          <h3 className="text-3xl font-bold">10</h3>
-          <h3 className="mt-2 text-base text-gray-500 text-center">
-            Total time online
-          </h3>
-        </div>
-        <div className="flex flex-col justify-center items-center gap-3">
-          <div className="flex justify-center">
-            <Gauge
-              color="black"
-              absoluteStrokeWidth
-              stroke="gray"
-              strokeOpacity={0.77}
-              className="h-12 w-12 "
-            />
+          <div className="text-right">
+            <h3 className="text-lg font-semibold ">₹60</h3>
+            <p className="text-sm text-gray-500">Earned</p>
           </div>
-          <h3 className="text-3xl font-bold">30 Km</h3>
-          <h3 className="mt-2 text-base text-gray-500 text-center">
-            Total time online
-          </h3>
         </div>
-        <div className="flex flex-col justify-center items-center gap-3">
-          <div className="flex justify-center">
-            <NotepadTextDashed
-              color="black"
-              absoluteStrokeWidth
-              stroke="gray"
-              strokeOpacity={0.77}
-              className="h-12 w-12"
-            />
+
+        {/* Metrics Section */}
+        <div className=" sub-container-2 flex flex-wrap justify-between items-center w-full px-4 py-6 rounded-xl border border-gray-300 shadow-lg bg-gray-100 gap-6 sm:gap-3">
+          {/* Online Time */}
+          <div className="flex flex-col items-center flex-1 sm:w-auto">
+            <Clock className="h-8 w-8 text-gray-600" />
+            <h3 className="text-xl font-bold mt-2">10h</h3>
+            <p className="text-sm text-gray-500 text-center">Time Online</p>
           </div>
-          <h3 className="text-3xl font-bold">20</h3>
-          <h3 className="mt-2 text-base text-gray-500 text-center">
-            Total time online
-          </h3>
+
+          {/* Distance Traveled */}
+          <div className="flex flex-col items-center flex-1 sm:w-auto">
+            <Gauge className="h-8 w-8 text-gray-600" />
+            <h3 className="text-xl font-bold mt-2">30 Km</h3>
+            <p className="text-sm text-gray-500 text-center">
+              Distance Traveled
+            </p>
+          </div>
+
+          {/* Completed Rides */}
+          <div className="flex flex-col items-center flex-1 sm:w-auto">
+            <NotepadTextDashed className="h-8 w-8 text-gray-600" />
+            <h3 className="text-xl font-bold mt-2">20</h3>
+            <p className="text-sm text-gray-500 text-center">Rides Completed</p>
+          </div>
         </div>
+        <style>{`
+          @media (max-width: 340px) {
+            .top-container {
+              justify-content: center;
+            }
+            .sub-container-1 {
+              justify-content: center;
+            }
+            .sub-container-2 {
+            flex-direction: column;
+              justify-content: center;
+            }
+          }
+          }
+        `}</style>
       </div>
     </>
   );
