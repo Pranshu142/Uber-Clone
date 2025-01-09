@@ -13,6 +13,7 @@ import logger from "morgan";
 // import indexRouter from "./routes/index.js";
 import ridersRouter from "./routes/riders.routes.js";
 import captainsRouter from "./routes/captains.routes.js";
+import mapsRouter from "./routes/maps.routes.js";
 
 // Fix __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -31,5 +32,6 @@ app.use(expressStatic(join(__dirname, "public")));
 // app.use("/", indexRouter);
 app.use("/riders", ridersRouter);
 app.use("/captains", captainsRouter);
+app.use("/maps", mapsRouter);
 
 export default app;
