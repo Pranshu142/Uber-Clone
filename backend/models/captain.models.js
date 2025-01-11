@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const captainSchema = new mongoose.Schema({
+const captainSchema = new Schema({
   fullname: {
     firstname: {
       type: String,
@@ -18,7 +18,7 @@ const captainSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    lowecase: true,
+    lowercase: true,
     minlength: [5, "Email address must be at least 5 characters long"],
     match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
   },
@@ -46,12 +46,12 @@ const captainSchema = new mongoose.Schema({
       type: String,
       required: true,
       unique: true,
-      minLength: [3, "must contain atleast 3 characters"],
+      minLength: [3, "must contain at least 3 characters"],
     },
     color: {
       type: String,
       required: true,
-      minLength: [3, "must contain atleast 3 characters"],
+      minLength: [3, "must contain at least 3 characters"],
     },
     capacity: {
       type: Number,
@@ -80,7 +80,7 @@ captainSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-// // Pre Save Hook for Password Hashing
+// Pre Save Hook for Password Hashing
 captainSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
@@ -92,4 +92,4 @@ captainSchema.pre("save", async function (next) {
   }
 });
 
-export default mongoose.model("captains", captainSchema);
+export default model("captains", captainSchema);

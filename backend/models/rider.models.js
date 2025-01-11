@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const riderSchema = new mongoose.Schema({
+const riderSchema = new Schema({
   fullname: {
     firstname: {
       type: "String",
@@ -63,5 +63,5 @@ riderSchema.pre("save", async function (next) {
   }
 });
 
-const riderModel = mongoose.model("riders", riderSchema);
+const riderModel = model("riders", riderSchema);
 export default riderModel;

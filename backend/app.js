@@ -14,6 +14,7 @@ import logger from "morgan";
 import ridersRouter from "./routes/riders.routes.js";
 import captainsRouter from "./routes/captains.routes.js";
 import mapsRouter from "./routes/maps.routes.js";
+import rideRoute from "./routes/ride.routes.js";
 
 // Fix __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -33,5 +34,6 @@ app.use(expressStatic(join(__dirname, "public")));
 app.use("/riders", ridersRouter);
 app.use("/captains", captainsRouter);
 app.use("/maps", mapsRouter);
+app.use("/ride", rideRoute);
 
 export default app;
