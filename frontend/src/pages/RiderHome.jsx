@@ -10,6 +10,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { gsap } from "gsap";
+import axios from "axios";
 import LocationSearchPanel from "../components/LocationSearchPanel.jsx";
 import AvailableRidesType from "../components/AvailableRidesType.jsx";
 import ConfirmRidePanel from "../components/ConfirmRidePannel.jsx";
@@ -45,6 +46,12 @@ const RiderHome = () => {
     lookingForCaptain: false,
     waitingCaptain: false,
   });
+
+  const [suggestions, setSuggestions] = useState([]);
+  const [startPoint, setStartPoint] = useState("");
+  const [endPoint, setEndPoint] = useState("");
+  const [confirmRideImage, setConfirmRideImage] = useState("");
+  const [fare, setFare] = useState(0);
 
   const refs = {
     map: useRef(null),
@@ -122,8 +129,45 @@ const RiderHome = () => {
     gsap.to(refs.lookingForCaptainPanel.current, config.panel);
   }, [panels.lookingForCaptain]);
 
+  const findRideBtnFunc = () => {
+    togglePanel("main", false);
+    togglePanel("rideType", true);
+  };
+
   const togglePanel = (panelName, value) => {
     setPanels((prev) => ({ ...prev, [panelName]: value }));
+  };
+
+  const fetchSuggestions = async (input) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/maps/get-suggestions`,
+        {
+          params: { input },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      // console.log(response.data);
+      setSuggestions(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
+
+  const handlePickupInputChange = (e) => {
+    setStartPoint(e.target.value);
+    if (startPoint.length >= 3) {
+      fetchSuggestions(startPoint);
+    }
+  };
+  const handleDestinationInputChange = (e) => {
+    setEndPoint(e.target.value);
+    if (endPoint.length >= 3) {
+      fetchSuggestions(endPoint);
+    }
   };
 
   const renderPanel = (key, component) => (
@@ -138,6 +182,8 @@ const RiderHome = () => {
     </div>
   );
 
+  const [activeInput, setActiveInput] = useState(null);
+
   return (
     <div className="relative h-screen w-screen overflow-hidden">
       <img
@@ -148,7 +194,12 @@ const RiderHome = () => {
       <div ref={refs.logoutButton} className="absolute top-0 right-0">
         <RiderLogoutButton />
       </div>
-
+      <button
+        className="absolute z-[3000] top-10 left-4 bg-green-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+        onClick={() => togglePanel("waitingCaptain", true)}
+      >
+        Find Captain
+      </button>
       {/* Map */}
       <div ref={refs.map} className="h-full w-full">
         <MapContainer
@@ -188,23 +239,45 @@ const RiderHome = () => {
               className="w-full border-2 rounded-lg px-8 md:px-10 py-3 md:py-4 text-base md:text-lg"
               type="text"
               placeholder="Enter your pickup location"
-              onClick={() => togglePanel("main", true)}
+              value={startPoint}
+              onClick={() => {
+                setActiveInput("startPoint");
+                if (!panels.main) {
+                  togglePanel("main", true);
+                }
+              }}
+              onChange={handlePickupInputChange} // Fix: Pass the function reference directly
             />
             <input
               className="w-full border-2 rounded-lg px-8 md:px-10 py-3 md:py-4 text-base md:text-lg"
               type="text"
               placeholder="Enter your drop-off location"
-              onClick={() => togglePanel("main", true)}
+              value={endPoint}
+              onClick={() => {
+                setActiveInput("endPoint");
+                if (!panels.main) {
+                  togglePanel("main", true);
+                }
+              }}
+              onChange={handleDestinationInputChange} // Fix: Pass the function reference directly
             />
           </form>
+          <button
+            className="w-full bg-blue-500 text-white py-3 md:py-4 rounded-lg text-base md:text-lg font-semibold mt-4"
+            onClick={findRideBtnFunc}
+          >
+            Find Ride
+          </button>
         </div>
 
         {/* Panels */}
         {renderPanel(
           "panel",
           <LocationSearchPanel
-            setPannelOpen={(value) => togglePanel("main", value)}
-            setRideTypePannelOpen={(value) => togglePanel("rideType", value)}
+            suggestions={suggestions}
+            setStartPoint={setStartPoint}
+            setEndPoint={setEndPoint}
+            activeInput={activeInput}
           />
         )}
         {renderPanel(
@@ -213,6 +286,10 @@ const RiderHome = () => {
             setRideTypePannelOpen={(value) => togglePanel("rideType", value)}
             closeRideTypePannelRef={refs.closeRideTypePanel}
             setConfirmRidePannel={(value) => togglePanel("confirmRide", value)}
+            startPoint={startPoint}
+            endPoint={endPoint}
+            setConfirmRideImage={setConfirmRideImage}
+            setFare={setFare}
           />
         )}
         {renderPanel(
@@ -223,6 +300,10 @@ const RiderHome = () => {
             }
             setConfirmRidePannel={(value) => togglePanel("confirmRide", value)}
             closeConfirmRidePannelRef={refs.closeConfirmRidePanel}
+            startPoint={startPoint}
+            endPoint={endPoint}
+            confirmRideImage={confirmRideImage}
+            fare={fare}
           />
         )}
         {renderPanel(
@@ -231,16 +312,26 @@ const RiderHome = () => {
             setLookingForCaptainPannel={(value) =>
               togglePanel("lookingForCaptain", value)
             }
+            startPoint={startPoint}
+            endPoint={endPoint}
+            confirmRideImage={confirmRideImage}
+            fare={fare}
           />
         )}
+        {/* {console.log(startPoint, endPoint)} */}
         {renderPanel(
           "waitingCaptainPanel",
           <WaitingCaptainPanel
             setWaitingCaptainPannel={(value) =>
               togglePanel("waitingCaptain", value)
             }
+            startPoint={startPoint}
+            endPoint={endPoint}
+            confirmRideImage={confirmRideImage}
+            fare={fare}
           />
         )}
+        {/* {console.log(startPoint, endPoint)} */}
       </div>
     </div>
   );

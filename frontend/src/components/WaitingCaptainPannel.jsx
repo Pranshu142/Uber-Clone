@@ -3,7 +3,14 @@ import { MapPinOff, MapPin, Coins } from "lucide-react";
 import PropTypes from "prop-types";
 import BallTriangle from "react-loading-icons/dist/esm/components/ball-triangle";
 
-const WaitingCaptainPannel = ({ setWaitingCaptainPannel }) => {
+const WaitingCaptainPanel = ({
+  setWaitingCaptainPannel,
+  startPoint,
+  endPoint,
+  confirmRideImage,
+  fare,
+}) => {
+  console.log(confirmRideImage);
   return (
     <div className="flex flex-col items-start gap-8 px-4 py-5">
       {/* Heading and Loading Indicator */}
@@ -32,7 +39,11 @@ const WaitingCaptainPannel = ({ setWaitingCaptainPannel }) => {
         </div>
         <div className="rounded-full h-20 w-20 sm:h-24 sm:w-24 absolute left-16 sm:left-20 overflow-hidden">
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTslYkc4PUEBbjx98XiTBQ2uLUJBW6TGiHxrQ&s"
+            src={
+              confirmRideImage === ""
+                ? "https://static.vecteezy.com/system/resources/thumbnails/032/507/395/small/3d-character-taxi-driver-giving-a-thumb-up-pose-3d-render-isolated-on-transparent-backdrop-png.png"
+                : confirmRideImage
+            }
             alt="Vehicle"
             className="object-cover h-full w-full object-center"
           />
@@ -54,21 +65,17 @@ const WaitingCaptainPannel = ({ setWaitingCaptainPannel }) => {
       <div className="flex flex-col w-full gap-4">
         <button className="flex justify-start items-center gap-2 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 sm:py-5 active:border-2 active:border-black w-full text-left">
           <MapPinOff className="h-5 w-5" />
-          <h3 className="text-sm sm:text-lg font-semibold">
-            1600 Amphitheatre Parkway, Bengaluru, Karnataka
-          </h3>
+          <h3 className="text-sm sm:text-lg font-semibold">{startPoint}</h3>
         </button>
 
         <button className="flex justify-start items-center gap-2 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 sm:py-5 active:border-2 active:border-black w-full text-left">
           <MapPin className="h-5 w-5" />
-          <h3 className="text-sm sm:text-lg font-semibold">
-            1600 Amphitheatre Parkway, Bengaluru, Karnataka
-          </h3>
+          <h3 className="text-sm sm:text-lg font-semibold">{endPoint}</h3>
         </button>
 
         <button className="flex justify-start items-center gap-2 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 sm:py-5 active:border-2 active:border-black w-full text-left">
           <Coins className="h-5 w-5" />
-          <h3 className="text-sm sm:text-lg font-semibold">₹60</h3>
+          <h3 className="text-sm sm:text-lg font-semibold">{fare}</h3>
         </button>
       </div>
 
@@ -85,8 +92,12 @@ const WaitingCaptainPannel = ({ setWaitingCaptainPannel }) => {
   );
 };
 
-WaitingCaptainPannel.propTypes = {
+WaitingCaptainPanel.propTypes = {
   setWaitingCaptainPannel: PropTypes.func.isRequired,
+  endPoint: PropTypes.string.isRequired,
+  startPoint: PropTypes.string.isRequired,
+  confirmRideImage: PropTypes.string.isRequired,
+  fare: PropTypes.number.isRequired,
 };
 
-export default WaitingCaptainPannel;
+export default WaitingCaptainPanel;

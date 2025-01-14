@@ -24,7 +24,7 @@ const COST_PER_METER = {
 };
 
 // Function to calculate fare based on origin, destination, and vehicle type
-export const calculateFare = async (origin, destination, vehicleType) => {
+export const calculateFair = async (origin, destination, vehicleType) => {
   try {
     // Get distance and duration between origin and destination
     const { distance, duration } = await getDistanceTime(origin, destination);

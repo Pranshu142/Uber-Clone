@@ -20,10 +20,10 @@ const ConfirmRidePanel = ({
   setLookingForCaptainPannel,
   closeConfirmRidePannelRef,
   setConfirmRidePannel,
-  pickupAddress = "1600 Amphitheatre Parkway, Bengaluru, Karnataka",
-  dropAddress = "1600 Amphitheatre Parkway, Bengaluru, Karnataka",
-  fare = 60,
-  imageSrc = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ7Kt54z31PkbdlqmqnyWnaCjvcLYRG-T_8Q&",
+  startPoint,
+  endPoint,
+  confirmRideImage,
+  fare,
 }) => {
   const handleConfirmRide = () => {
     setLookingForCaptainPannel(true);
@@ -53,7 +53,7 @@ const ConfirmRidePanel = ({
         aria-label="Vehicle preview"
       >
         <img
-          src={imageSrc}
+          src={confirmRideImage}
           alt="Ride Vehicle"
           className="h-28 w-28 sm:h-36 sm:w-32 object-center object-cover"
           loading="lazy"
@@ -61,8 +61,8 @@ const ConfirmRidePanel = ({
       </div>
 
       <div className="flex flex-col w-full gap-4">
-        <LocationButton icon={MapPinOff} address={pickupAddress} />
-        <LocationButton icon={MapPin} address={dropAddress} />
+        <LocationButton icon={MapPinOff} address={startPoint} />
+        <LocationButton icon={MapPin} address={endPoint} />
 
         <button className="flex items-center gap-3 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 active:border-2 active:border-black w-full text-left transition-colors">
           <Coins className="h-6 w-6 text-gray-700 flex-shrink-0" />
@@ -84,6 +84,9 @@ ConfirmRidePanel.propTypes = {
   setLookingForCaptainPannel: PropTypes.func.isRequired,
   setConfirmRidePannel: PropTypes.func.isRequired,
   closeConfirmRidePannelRef: PropTypes.object.isRequired,
+  startPoint: PropTypes.string.isRequired,
+  endPoint: PropTypes.string.isRequired,
+  confirmRideImage: PropTypes.string.isRequired,
   pickupAddress: PropTypes.string,
   dropAddress: PropTypes.string,
   fare: PropTypes.number,
