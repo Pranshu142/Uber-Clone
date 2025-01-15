@@ -195,7 +195,7 @@ const RiderHome = () => {
       );
       // console.log(response.data);
       setSuggestions(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
     }
@@ -249,7 +249,7 @@ const RiderHome = () => {
       <div ref={refs.logoutButton} className="absolute top-0 right-0">
         <RiderLogoutButton />
       </div>
-      <button
+      {/* <button
         className="absolute z-[3000] top-10 left-4 bg-green-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-600 transition duration-300"
         onClick={() => {
           if (!isLocationsSet()) {
@@ -260,7 +260,7 @@ const RiderHome = () => {
         }}
       >
         Find Captain
-      </button>
+      </button> */}
       {/* Map */}
       <div ref={refs.map} className="h-full w-full">
         <MapContainer
