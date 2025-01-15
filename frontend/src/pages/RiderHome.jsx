@@ -1,6 +1,7 @@
+// Import React and hooks
 import { useState, useRef, useEffect } from "react";
-import { useGSAP } from "@gsap/react";
-import "remixicon/fonts/remixicon.css";
+
+// Import Map related dependencies
 import {
   MapContainer,
   TileLayer,
@@ -9,8 +10,16 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+
+// Import Animation libraries
+import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
+import "remixicon/fonts/remixicon.css";
+
+// Import HTTP client
 import axios from "axios";
+
+// Import Components
 import LocationSearchPanel from "../components/LocationSearchPanel.jsx";
 import AvailableRidesType from "../components/AvailableRidesType.jsx";
 import ConfirmRidePanel from "../components/ConfirmRidePannel.jsx";
@@ -18,8 +27,14 @@ import WaitingCaptainPanel from "../components/WaitingCaptainPannel.jsx";
 import LookingForCaptain from "../components/LookingForCaptain.jsx";
 import RiderLogoutButton from "../components/RiderLogoutButton.jsx";
 
+/**
+ * LocationMarker Component
+ * Handles user's current location on the map
+ */
 const LocationMarker = () => {
   const [position, setPosition] = useState(null);
+
+  // Map event handlers
   const map = useMapEvents({
     locationfound(e) {
       setPosition(e.latlng);
@@ -27,6 +42,7 @@ const LocationMarker = () => {
     },
   });
 
+  // Locate user on component mount
   useEffect(() => {
     map.locate();
   }, [map]);
@@ -38,7 +54,12 @@ const LocationMarker = () => {
   );
 };
 
+/**
+ * RiderHome Component
+ * Main component for the rider's home screen
+ */
 const RiderHome = () => {
+  // Panel states
   const [panels, setPanels] = useState({
     main: false,
     rideType: false,
@@ -47,12 +68,15 @@ const RiderHome = () => {
     waitingCaptain: false,
   });
 
+  // Location and ride states
   const [suggestions, setSuggestions] = useState([]);
   const [startPoint, setStartPoint] = useState("");
   const [endPoint, setEndPoint] = useState("");
   const [confirmRideImage, setConfirmRideImage] = useState("");
   const [fare, setFare] = useState(0);
+  const [activeInput, setActiveInput] = useState(null);
 
+  // Refs for animations and DOM elements
   const refs = {
     map: useRef(null),
     panel: useRef(null),
@@ -129,12 +153,32 @@ const RiderHome = () => {
     gsap.to(refs.lookingForCaptainPanel.current, config.panel);
   }, [panels.lookingForCaptain]);
 
+  const isLocationsSet = () => {
+    return startPoint.trim() !== "" && endPoint.trim() !== "";
+  };
+
   const findRideBtnFunc = () => {
+    if (!isLocationsSet()) {
+      alert("Please set both pickup and drop-off locations");
+      return;
+    }
     togglePanel("main", false);
     togglePanel("rideType", true);
   };
 
   const togglePanel = (panelName, value) => {
+    const requiresLocations = [
+      "rideType",
+      "confirmRide",
+      "lookingForCaptain",
+      "waitingCaptain",
+    ].includes(panelName);
+
+    if (requiresLocations && value && !isLocationsSet()) {
+      alert("Please set both pickup and drop-off locations");
+      return;
+    }
+
     setPanels((prev) => ({ ...prev, [panelName]: value }));
   };
 
@@ -170,19 +214,30 @@ const RiderHome = () => {
     }
   };
 
-  const renderPanel = (key, component) => (
-    <div
-      key={key}
-      ref={refs[key]}
-      className={`${
-        key === "panel" ? "" : "absolute"
-      } h-0 bg-white w-full p-0 overflow-y-auto`}
-    >
-      {component}
-    </div>
-  );
+  const renderPanel = (key, component) => {
+    const requiresLocations = [
+      "rideTypePanel",
+      "confirmRidePanel",
+      "lookingForCaptainPanel",
+      "waitingCaptainPanel",
+    ].includes(key);
 
-  const [activeInput, setActiveInput] = useState(null);
+    if (requiresLocations && !isLocationsSet()) {
+      return null;
+    }
+
+    return (
+      <div
+        key={key}
+        ref={refs[key]}
+        className={`${
+          key === "panel" ? "" : "absolute"
+        } h-0 bg-white w-full p-0 overflow-y-auto`}
+      >
+        {component}
+      </div>
+    );
+  };
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
@@ -196,7 +251,13 @@ const RiderHome = () => {
       </div>
       <button
         className="absolute z-[3000] top-10 left-4 bg-green-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-600 transition duration-300"
-        onClick={() => togglePanel("waitingCaptain", true)}
+        onClick={() => {
+          if (!isLocationsSet()) {
+            alert("Please set both pickup and drop-off locations");
+            return;
+          }
+          togglePanel("waitingCaptain", true);
+        }}
       >
         Find Captain
       </button>
