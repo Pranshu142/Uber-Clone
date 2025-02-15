@@ -1,6 +1,11 @@
 import { createRide, calculateFair } from "../services/ride.service.js";
 import riderModel from "../models/rider.models.js";
+import rideModel from "../models/ride.model.js";
 import { validationResult } from "express-validator";
+import captainModel from "../models/captain.models.js";
+import { getCaptainsNearby } from "../services/maps.service.js";
+import getPosition from "../services/maps.service.js";
+import Socket from "../socket.js";
 
 export default async (req, res) => {
   const errors = validationResult(req);
@@ -25,8 +30,41 @@ export default async (req, res) => {
       return res.status(404).json({ error: "Rider not found" });
     }
 
-    const ride = await createRide({ origin, destination, vehicleType, rider });
-    return res.status(201).json(ride);
+    try {
+      const ride = await createRide({
+        origin,
+        destination,
+        vehicleType,
+        rider,
+      });
+      const { lat, lng } = await getPosition(origin);
+
+      if (!lat || !lng) {
+        throw new Error("Could not determine pickup location coordinates");
+      }
+
+      const nearByCaptains = await getCaptainsNearby(lng, lat, vehicleType, 2);
+      ride.otp = "";
+      // console.log("Nearby captains:", nearbyCaptains);
+      const rideWithRider = await rideModel
+        .findOne({ _id: ride._id })
+        .populate("rider");
+      // console.log(rideWithRider);
+
+      nearByCaptains.map((captain) => {
+        Socket.sendMessage(captain.socketId, "ride-request", {
+          ride: rideWithRider,
+          rider: rider,
+        });
+      });
+      return res.status(201).json({
+        ride,
+        nearByCaptains,
+      });
+    } catch (error) {
+      console.error("Error creating ride:", error.message);
+      return res.status(500).json({ error: error.message });
+    }
   } catch (error) {
     console.error("Error creating ride:", error.message);
     return res.status(500).json({ error: "Internal server error" });

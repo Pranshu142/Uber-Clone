@@ -1,6 +1,10 @@
 import { Clock, Gauge, NotepadTextDashed } from "lucide-react";
+import { useContext } from "react";
+import { CaptainDataContext } from "../context/CaptainContext";
 
 const CaptainDetails = () => {
+  const { captain } = useContext(CaptainDataContext);
+  console.log(captain);
   return (
     <>
       <div className="w-full px-4 py-5 h-full flex flex-col gap-6 overflow-y-auto">
@@ -13,7 +17,9 @@ const CaptainDetails = () => {
               className="h-20 w-20 object-cover rounded-full shadow-md"
             />
             <div>
-              <h3 className="text-lg font-semibold">Driver Name</h3>
+              <h3 className="text-lg font-semibold">
+                {captain.fullname.firstname}
+              </h3>
               <p className="text-sm text-gray-500">Driver Level</p>
             </div>
           </div>

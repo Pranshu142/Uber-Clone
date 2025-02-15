@@ -67,7 +67,7 @@ export const createRide = async ({
   }
   try {
     // Calculate fare for the ride
-    const fare = await calculateFare(origin, destination, vehicleType);
+    const fare = await calculateFair(origin, destination, vehicleType);
     // Generate a 6-digit OTP
     const otp = generateOtp(6);
     // Create a ride object with all necessary details

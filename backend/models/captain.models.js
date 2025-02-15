@@ -34,7 +34,7 @@ const captainSchema = new Schema({
   },
   isAvailable: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 
   vehicleInfo: {
@@ -59,15 +59,18 @@ const captainSchema = new Schema({
     },
   },
   location: {
-    lat: {
-      type: Number,
+    type: {
+      type: String,
+      enum: ["Point"],
+      default: "Point",
     },
-    lng: {
-      type: Number,
+    coordinates: {
+      type: [Number],
+      default: [0, 0],
     },
   },
 });
-
+captainSchema.index({ location: "2dsphere" });
 captainSchema.methods.generateToken = function () {
   const token = jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "1d", // Optional expiration time

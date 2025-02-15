@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -13,6 +13,8 @@ import RideAcceptPopUp from "../components/RideAcceptPopUp";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import CaptainConfirmRide from "../components/CaptainConfirmRide";
+import { SocketContext } from "../context/SocketContext.jsx";
+import { CaptainDataContext } from "../context/CaptainContext.jsx";
 
 const LocationMarker = () => {
   const [position, setPosition] = useState(null);
@@ -40,6 +42,38 @@ const CaptainHome = () => {
   const [CaptainConfirmRidePanelOpen, setCaptainConfirmRidePanelOpen] =
     useState(false);
   const [ridePopUpPanelOpen, setRidePopUpPanelOpen] = useState(false);
+
+  const { socket } = useContext(SocketContext);
+  const { captain } = useContext(CaptainDataContext);
+
+  useEffect(() => {
+    socket.emit("join", {
+      userType: "captain",
+      userId: captain._id,
+    });
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        socket.emit("update-captain-location", {
+          userId: captain._id,
+          location: {
+            longitude: position.coords.longitude,
+            latitude: position.coords.latitude,
+          },
+        });
+      },
+      (error) => {
+        console.log(error);
+        alert(`${Error(error.code)}: ${error.message}`);
+      }
+    );
+    console.log(watchId);
+
+    socket.on("ride-request", (data) => {
+      const { ride, rider } = data;
+      console.log(ride, rider);
+      // setRidePopUpPanelOpen(true);
+    });
+  }, [captain, socket]);
 
   useGSAP(() => {
     gsap.to(ridePopUp.current, {

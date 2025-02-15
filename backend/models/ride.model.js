@@ -7,7 +7,7 @@ const rideSchema = new Schema(
       ref: "riders",
       required: true,
     },
-    driver: {
+    captain: {
       type: Schema.Types.ObjectId,
       ref: "captains",
     },

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState, createContext } from "react";
 import PropTypes from "prop-types";
 
-export const RiderDataContext = React.createContext();
+export const RiderDataContext = createContext();
 
 const RiderContext = ({ children }) => {
   const [rider, setRider] = useState({

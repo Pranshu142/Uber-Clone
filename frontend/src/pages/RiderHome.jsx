@@ -1,5 +1,5 @@
 // Import React and hooks
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 
 // Import Map related dependencies
 import {
@@ -26,6 +26,8 @@ import ConfirmRidePanel from "../components/ConfirmRidePannel.jsx";
 import WaitingCaptainPanel from "../components/WaitingCaptainPannel.jsx";
 import LookingForCaptain from "../components/LookingForCaptain.jsx";
 import RiderLogoutButton from "../components/RiderLogoutButton.jsx";
+import { SocketContext } from "../context/SocketContext.jsx";
+import { RiderDataContext } from "../context/RiderContext.jsx";
 
 /**
  * LocationMarker Component
@@ -112,6 +114,17 @@ const RiderHome = () => {
       logout: { opacity: "1", pointerEvents: "auto" },
     },
   };
+
+  const { socket } = useContext(SocketContext);
+  const { rider } = useContext(RiderDataContext);
+  // console.log(rider);
+  useEffect(() => {
+    // console.log(socket);
+    socket.emit("join", {
+      userType: "rider",
+      userId: rider._id,
+    });
+  }, [rider]);
 
   useGSAP(() => {
     const config = panels.main ? animations.panelOpen : animations.panelClosed;
