@@ -64,7 +64,7 @@ const RiderHome = () => {
   // Panel states
   const [panels, setPanels] = useState({
     main: false,
-    rideType: false,
+    vehicleType: false,
     confirmRide: false,
     lookingForCaptain: false,
     waitingCaptain: false,
@@ -74,6 +74,7 @@ const RiderHome = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [startPoint, setStartPoint] = useState("");
   const [endPoint, setEndPoint] = useState("");
+  const [vehicleType, setVehicleType] = useState("");
   const [confirmRideImage, setConfirmRideImage] = useState("");
   const [fare, setFare] = useState(0);
   const [activeInput, setActiveInput] = useState(null);
@@ -85,9 +86,9 @@ const RiderHome = () => {
     close: useRef(null),
     logoutButton: useRef(null),
     waitingCaptainPanel: useRef(null),
-    rideTypePanel: useRef(null),
+    vehicleTypePanel: useRef(null),
     confirmRidePanel: useRef(null),
-    closeRideTypePanel: useRef(null),
+    closevehicleTypePanel: useRef(null),
     closeConfirmRidePanel: useRef(null),
     lookingForCaptainPanel: useRef(null),
   };
@@ -124,7 +125,7 @@ const RiderHome = () => {
       userType: "rider",
       userId: rider._id,
     });
-  }, [rider]);
+  }, [socket, rider]);
 
   useGSAP(() => {
     const config = panels.main ? animations.panelOpen : animations.panelClosed;
@@ -133,14 +134,14 @@ const RiderHome = () => {
     gsap.to(refs.logoutButton.current, config.logout);
   }, [panels.main]);
   useGSAP(() => {
-    const config = panels.rideType
+    const config = panels.vehicleType
       ? animations.panelOpen
       : animations.panelClosed;
 
-    gsap.to(refs.rideTypePanel.current, config.panel);
+    gsap.to(refs.vehicleTypePanel.current, config.panel);
 
-    gsap.to(refs.closeRideTypePanel.current, config.close);
-  }, [panels.rideType]);
+    gsap.to(refs.closevehicleTypePanel.current, config.close);
+  }, [panels.vehicleType]);
 
   useGSAP(() => {
     const config = panels.confirmRide
@@ -176,12 +177,12 @@ const RiderHome = () => {
       return;
     }
     togglePanel("main", false);
-    togglePanel("rideType", true);
+    togglePanel("vehicleType", true);
   };
 
   const togglePanel = (panelName, value) => {
     const requiresLocations = [
-      "rideType",
+      "vehicleType",
       "confirmRide",
       "lookingForCaptain",
       "waitingCaptain",
@@ -229,7 +230,7 @@ const RiderHome = () => {
 
   const renderPanel = (key, component) => {
     const requiresLocations = [
-      "rideTypePanel",
+      "vehicleTypePanel",
       "confirmRidePanel",
       "lookingForCaptainPanel",
       "waitingCaptainPanel",
@@ -355,13 +356,16 @@ const RiderHome = () => {
           />
         )}
         {renderPanel(
-          "rideTypePanel",
+          "vehicleTypePanel",
           <AvailableRidesType
-            setRideTypePannelOpen={(value) => togglePanel("rideType", value)}
-            closeRideTypePannelRef={refs.closeRideTypePanel}
+            setVehicleTypePannelOpen={(value) =>
+              togglePanel("vehicleType", value)
+            }
+            closevehicleTypePannelRef={refs.closevehicleTypePanel}
             setConfirmRidePannel={(value) => togglePanel("confirmRide", value)}
             startPoint={startPoint}
             endPoint={endPoint}
+            setVehicleType={setVehicleType}
             setConfirmRideImage={setConfirmRideImage}
             setFare={setFare}
           />
@@ -376,6 +380,7 @@ const RiderHome = () => {
             closeConfirmRidePannelRef={refs.closeConfirmRidePanel}
             startPoint={startPoint}
             endPoint={endPoint}
+            vehicleType={vehicleType}
             confirmRideImage={confirmRideImage}
             fare={fare}
           />

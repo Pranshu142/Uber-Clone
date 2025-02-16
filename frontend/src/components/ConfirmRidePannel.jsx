@@ -1,6 +1,7 @@
 import { memo } from "react";
 import PropTypes from "prop-types";
 import { Coins, MapPin, MapPinOff, ChevronDown } from "lucide-react";
+import axios from "axios";
 
 const LocationButton = memo(({ icon: Icon, address }) => (
   <button className="flex items-center gap-3 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 active:border-2 active:border-black w-full text-left transition-colors">
@@ -24,9 +25,30 @@ const ConfirmRidePanel = ({
   endPoint,
   confirmRideImage,
   fare,
+  vehicleType,
 }) => {
-  const handleConfirmRide = () => {
-    setLookingForCaptainPannel(true);
+  const handleConfirmRide = async () => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/ride/create-ride`,
+        {
+          origin: startPoint,
+          destination: endPoint,
+          vehicleType,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        setLookingForCaptainPannel(true);
+      }
+    } catch (error) {
+      console.error("Ride creation failed:", error);
+    }
   };
 
   const handleClose = () => {
@@ -87,6 +109,7 @@ ConfirmRidePanel.propTypes = {
   startPoint: PropTypes.string.isRequired,
   endPoint: PropTypes.string.isRequired,
   confirmRideImage: PropTypes.string.isRequired,
+  vehicleType: PropTypes.string.isRequired,
   pickupAddress: PropTypes.string,
   dropAddress: PropTypes.string,
   fare: PropTypes.number,

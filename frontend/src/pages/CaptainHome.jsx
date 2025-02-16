@@ -51,28 +51,44 @@ const CaptainHome = () => {
       userType: "captain",
       userId: captain._id,
     });
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        socket.emit("update-captain-location", {
-          userId: captain._id,
-          location: {
-            longitude: position.coords.longitude,
-            latitude: position.coords.latitude,
-          },
-        });
-      },
-      (error) => {
-        console.log(error);
-        alert(`${Error(error.code)}: ${error.message}`);
-      }
-    );
-    console.log(watchId);
+
+    let watchId;
+    if (navigator.geolocation) {
+      watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          socket.emit("update-captain-location", {
+            userId: captain._id,
+            location: {
+              longitude: position.coords.longitude,
+              latitude: position.coords.latitude,
+            },
+          });
+        },
+        (error) => {
+          console.log(error);
+          alert(`${Error(error.code)}: ${error.message}`);
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 20000,
+          maximumAge: 1000,
+        }
+      );
+      console.log(watchId);
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
 
     socket.on("ride-request", (data) => {
       const { ride, rider } = data;
       console.log(ride, rider);
-      // setRidePopUpPanelOpen(true);
+      setRidePopUpPanelOpen(true);
     });
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+      socket.off("ride-request");
+    };
   }, [captain, socket]);
 
   useGSAP(() => {

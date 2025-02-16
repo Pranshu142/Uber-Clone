@@ -8,7 +8,7 @@ import { body, query } from "express-validator";
 const router = express.Router();
 
 router.post(
-  "/create",
+  "/create-ride",
   riderAuth,
   [
     body("origin").isString().isLength({ min: 3 }),

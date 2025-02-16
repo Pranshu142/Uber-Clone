@@ -49,7 +49,15 @@ const RIDES_DATA = [
 ];
 
 const RideCard = memo(
-  ({ ride, onSelect, startPoint, endPoint, setConfirmRideImage, setFare }) => {
+  ({
+    ride,
+    onSelect,
+    startPoint,
+    endPoint,
+    setConfirmRideImage,
+    setFare,
+    setVehicleType,
+  }) => {
     const [price, setPrice] = useState(0);
 
     useEffect(() => {
@@ -68,7 +76,8 @@ const RideCard = memo(
     }, [startPoint, endPoint, ride.id, setFare]);
 
     const handleClick = () => {
-      setConfirmRideImage(ride.imageSrc); // Set the image when clicked
+      setConfirmRideImage(ride.imageSrc);
+      setVehicleType(ride.id); // Set the image when clicked
       onSelect(); // Call the original onSelect handler
     };
 
@@ -113,7 +122,7 @@ const RideCard = memo(
 RideCard.displayName = "RideCard";
 
 const AvailableRidesPanel = ({
-  setRideTypePannelOpen,
+  setVehicleTypePannelOpen,
   closeRideTypePannelRef,
   setConfirmRidePannel,
   rides = RIDES_DATA,
@@ -121,13 +130,14 @@ const AvailableRidesPanel = ({
   endPoint,
   setConfirmRideImage,
   setFare,
+  setVehicleType,
 }) => {
   const handleRideSelect = () => {
     setConfirmRidePannel(true);
   };
 
   const handleClose = () => {
-    setRideTypePannelOpen(false);
+    setVehicleTypePannelOpen(false);
   };
 
   return (
@@ -155,6 +165,7 @@ const AvailableRidesPanel = ({
             endPoint={endPoint}
             setConfirmRideImage={setConfirmRideImage}
             setFare={setFare}
+            setVehicleType={setVehicleType}
           />
         ))}
       </div>
@@ -163,7 +174,7 @@ const AvailableRidesPanel = ({
 };
 
 AvailableRidesPanel.propTypes = {
-  setRideTypePannelOpen: PropTypes.func.isRequired,
+  setVehicleTypePannelOpen: PropTypes.func.isRequired,
   closeRideTypePannelRef: PropTypes.object.isRequired,
   setConfirmRidePannel: PropTypes.func.isRequired,
   startPoint: PropTypes.string.isRequired,
