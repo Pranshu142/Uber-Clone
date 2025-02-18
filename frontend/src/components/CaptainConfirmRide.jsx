@@ -1,11 +1,15 @@
 import { Coins, MapPin, MapPinOff } from "lucide-react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 const CaptainConfirmRide = ({
   setRidePopUpPanelOpen,
   setCaptainConfirmRidePanelOpen,
   ride,
 }) => {
+  const verifyOtpAndStartRide = () => {
+    // verify otp and start ride
+    console.log("ride started");
+  };
   return (
     <>
       <div className="container-1 flex justify-start  items-center w-full">
@@ -61,12 +65,13 @@ const CaptainConfirmRide = ({
           placeholder="Enter your OTP"
         />
         <div className="container-4 flex items-center justify-between ">
-          <Link
+          <button
             to={"/captain-riding"}
             className="bg-green-300 px-5 py-4 rounded-full mt-5 text-xl sm:text-2xl font-semibold active:border-2 active:border-black transition-all duration-200"
+            onClick={verifyOtpAndStartRide}
           >
             Confirm Ride
-          </Link>
+          </button>
           <button
             type="button"
             className="bg-orange-300 px-5 py-4 rounded-full mt-5 text-xl sm:text-2xl font-semibold active:border-2 active:border-black transition-all duration-200"

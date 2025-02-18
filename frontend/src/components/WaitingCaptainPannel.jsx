@@ -10,6 +10,7 @@ const WaitingCaptainPannel = ({
   confirmRideImage,
   fare,
   captainAssigned,
+  ride,
 }) => {
   console.log(confirmRideImage);
   return (
@@ -32,7 +33,9 @@ const WaitingCaptainPannel = ({
         </div>
         <div className="flex justify-between items-center gap-4 w-full">
           <h1 className="inline font-bold text-lg">OTP</h1>
-          <h1 className="inline font-bold text-lg">Some value</h1>
+          <h1 className="inline font-bold text-lg">
+            {ride ? ride.otp : "Some value"}
+          </h1>
         </div>
       </div>
       {/* Captain Details */}
@@ -115,6 +118,9 @@ WaitingCaptainPannel.propTypes = {
       vehicleType: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  ride: PropTypes.shape({
+    otp: PropTypes.string,
+  }),
 };
 
 export default WaitingCaptainPannel;

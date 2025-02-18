@@ -2,6 +2,7 @@ import {
   createRide,
   calculateFair,
   confirmRide,
+  rideStarted,
 } from "../services/ride.service.js";
 import riderModel from "../models/rider.models.js";
 import rideModel from "../models/ride.model.js";
@@ -111,5 +112,22 @@ export const confirmRideRequest = async (req, res) => {
   } catch (error) {
     console.error("Error confirming ride:", error);
     return res.status(500).json({ error: "Failed to confirm ride" });
+  }
+};
+
+export const rideStartedInfo = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors });
+  }
+  const { rideId } = req.body;
+  try {
+    const ride = await rideStarted(rideId);
+
+    Socket.sendMessage(ride.rider.socketId, "ride-started", ride);
+    return res.status(200).json(ride);
+  } catch (error) {
+    console.error("Error starting ride:", error);
+    return res.status(500).json({ error: "Failed to start ride" });
   }
 };

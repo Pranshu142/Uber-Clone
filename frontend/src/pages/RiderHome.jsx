@@ -79,6 +79,7 @@ const RiderHome = () => {
   const [fare, setFare] = useState(0);
   const [activeInput, setActiveInput] = useState(null);
   const [captainAssigned, setCaptainAssigned] = useState(null);
+  const [ride, setRide] = useState(null);
 
   // Refs for animations and DOM elements
   const refs = {
@@ -140,6 +141,7 @@ const RiderHome = () => {
     socket.on("ride-confirmed", (data) => {
       console.log(data);
       setCaptainAssigned(data.captain);
+      setRide(data);
       togglePanel("waitingCaptain", true);
     });
 

@@ -36,4 +36,11 @@ router.post(
   body("rideId").isMongoId().withMessage("provide a valid id"),
   confirmRideRequest
 );
+
+router.post(
+  "/ride-started",
+  captainAuth,
+  body("rideId").isMongoId().withMessage("provide a valid id"),
+  rideStartedInfo
+);
 export default router;

@@ -116,3 +116,18 @@ export const confirmRide = async ({ rideId, captain }) => {
 
   return ride;
 };
+
+export const rideStarted = async (rideId) => {
+  if (!rideId) {
+    throw new Error("rideId is required");
+  }
+  const ride = await RideModel.findOneAndUpdate(
+    {
+      _id: rideId,
+    },
+    {
+      status: "in-progress",
+    }
+  );
+  return ride;
+};
