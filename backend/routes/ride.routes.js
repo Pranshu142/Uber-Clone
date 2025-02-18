@@ -1,8 +1,9 @@
 import express from "express";
 import createRideController, {
   calculateAmount,
+  confirmRideRequest,
 } from "../controller/ride.controller.js";
-import riderAuth from "../middlewares/auth.js";
+import riderAuth, { captainAuth } from "../middlewares/auth.js";
 import { body, query } from "express-validator";
 
 const router = express.Router();
@@ -27,5 +28,12 @@ router.get(
     query("vehicleType").isString().isIn(["auto", "moto", "car"]),
   ],
   calculateAmount
+);
+
+router.post(
+  "/confirm-ride",
+  captainAuth,
+  body("rideId").isMongoId().withMessage("provide a valid id"),
+  confirmRideRequest
 );
 export default router;

@@ -205,5 +205,6 @@ RideCard.propTypes = {
   endPoint: PropTypes.string.isRequired,
   setConfirmRideImage: PropTypes.func.isRequired,
   setFare: PropTypes.func.isRequired,
+  setVehicleType: PropTypes.func.isRequired,
 };
 export default memo(AvailableRidesPanel);

@@ -3,31 +3,38 @@ import { MapPinOff, MapPin, Coins } from "lucide-react";
 import PropTypes from "prop-types";
 import BallTriangle from "react-loading-icons/dist/esm/components/ball-triangle";
 
-const WaitingCaptainPanel = ({
-  setWaitingCaptainPannel,
+const WaitingCaptainPannel = ({
+  setWaitingCaptainPanel,
   startPoint,
   endPoint,
   confirmRideImage,
   fare,
+  captainAssigned,
 }) => {
   console.log(confirmRideImage);
   return (
     <div className="flex flex-col items-start gap-8 px-4 py-5">
       {/* Heading and Loading Indicator */}
-      <div className="flex justify-between items-center gap-4 w-full">
-        <h3 className="text-xl sm:text-2xl font-bold text-center">
-          Reaching to you in a while
-        </h3>
-        <BallTriangle
-          fill="black"
-          fillOpacity={1}
-          stroke="gray"
-          strokeOpacity={0.7}
-          speed={1}
-          className="h-8 w-8 sm:h-10 sm:w-10"
-        />
-      </div>
 
+      <div className="flex flex-col justify-between items-center gap-10 w-full">
+        <div className="flex justify-between items-center gap-4 w-full">
+          <h3 className="text-xl sm:text-2xl font-bold text-center">
+            Reaching to you in a while
+          </h3>
+          <BallTriangle
+            fill="black"
+            fillOpacity={1}
+            stroke="gray"
+            strokeOpacity={0.7}
+            speed={1}
+            className="h-8 w-8 sm:h-10 sm:w-10"
+          />
+        </div>
+        <div className="flex justify-between items-center gap-4 w-full">
+          <h1 className="inline font-bold text-lg">OTP</h1>
+          <h1 className="inline font-bold text-lg">Some value</h1>
+        </div>
+      </div>
       {/* Captain Details */}
       <div className="relative w-full flex justify-end items-center px-4 py-8 rounded-2xl bg-gray-100 shadow-md shadow-gray-200">
         <div className="rounded-full h-20 w-20 sm:h-24 sm:w-24 absolute left-4 sm:left-5 overflow-hidden z-10 bg-gray-200">
@@ -50,13 +57,13 @@ const WaitingCaptainPanel = ({
         </div>
         <div className="flex flex-col text-right items-center gap-1 w-[50%]">
           <h3 className="w-full font-semibold text-sm sm:text-md">
-            Captain Name
+            {`${captainAssigned.fullname.firstname} ${captainAssigned.fullname.lastname}`}
           </h3>
           <h3 className="w-full font-semibold text-sm sm:text-md">
-            Vehicle Number
+            {captainAssigned.vehicleInfo.plate}
           </h3>
           <h3 className="w-full font-semibold text-sm sm:text-md">
-            Vehicle Name
+            {captainAssigned.vehicleInfo.vehicleType}
           </h3>
         </div>
       </div>
@@ -83,7 +90,7 @@ const WaitingCaptainPanel = ({
       <button
         className="bg-red-500 hover:bg-red-600 px-3 py-4 sm:py-5 w-full rounded-full mt-5 text-lg sm:text-xl font-bold active:border-2 active:border-black transition-all duration-200"
         onClick={() => {
-          setWaitingCaptainPannel(false);
+          setWaitingCaptainPanel(false);
         }}
       >
         Cancel Ride
@@ -92,12 +99,22 @@ const WaitingCaptainPanel = ({
   );
 };
 
-WaitingCaptainPanel.propTypes = {
-  setWaitingCaptainPannel: PropTypes.func.isRequired,
+WaitingCaptainPannel.propTypes = {
+  setWaitingCaptainPanel: PropTypes.func.isRequired,
   endPoint: PropTypes.string.isRequired,
   startPoint: PropTypes.string.isRequired,
   confirmRideImage: PropTypes.string.isRequired,
   fare: PropTypes.number.isRequired,
+  captainAssigned: PropTypes.shape({
+    fullname: PropTypes.shape({
+      firstname: PropTypes.string.isRequired,
+      lastname: PropTypes.string.isRequired,
+    }).isRequired,
+    vehicleInfo: PropTypes.shape({
+      plate: PropTypes.string.isRequired,
+      vehicleType: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
-export default WaitingCaptainPanel;
+export default WaitingCaptainPannel;

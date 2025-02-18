@@ -23,7 +23,7 @@ import axios from "axios";
 import LocationSearchPanel from "../components/LocationSearchPanel.jsx";
 import AvailableRidesType from "../components/AvailableRidesType.jsx";
 import ConfirmRidePanel from "../components/ConfirmRidePannel.jsx";
-import WaitingCaptainPanel from "../components/WaitingCaptainPannel.jsx";
+import WaitingCaptainPannel from "../components/WaitingCaptainPannel.jsx";
 import LookingForCaptain from "../components/LookingForCaptain.jsx";
 import RiderLogoutButton from "../components/RiderLogoutButton.jsx";
 import { SocketContext } from "../context/SocketContext.jsx";
@@ -78,6 +78,7 @@ const RiderHome = () => {
   const [confirmRideImage, setConfirmRideImage] = useState("");
   const [fare, setFare] = useState(0);
   const [activeInput, setActiveInput] = useState(null);
+  const [captainAssigned, setCaptainAssigned] = useState(null);
 
   // Refs for animations and DOM elements
   const refs = {
@@ -115,6 +116,17 @@ const RiderHome = () => {
       logout: { opacity: "1", pointerEvents: "auto" },
     },
   };
+  const togglePanel = (panelName, value) => {
+    // Only require locations if panel is vehicleType or lookingForCaptain
+    const requiresLocations = ["vehicleType", "lookingForCaptain"].includes(
+      panelName
+    );
+    if (requiresLocations && value && !isLocationsSet()) {
+      alert("Please set both pickup and drop-off locations");
+      return;
+    }
+    setPanels((prev) => ({ ...prev, [panelName]: value }));
+  };
 
   const { socket } = useContext(SocketContext);
   const { rider } = useContext(RiderDataContext);
@@ -125,6 +137,16 @@ const RiderHome = () => {
       userType: "rider",
       userId: rider._id,
     });
+    socket.on("ride-confirmed", (data) => {
+      console.log(data);
+      setCaptainAssigned(data.captain);
+      togglePanel("waitingCaptain", true);
+    });
+
+    return () => {
+      socket.off("ride-confirmed");
+      socket.off("join");
+    };
   }, [socket, rider]);
 
   useGSAP(() => {
@@ -180,22 +202,6 @@ const RiderHome = () => {
     togglePanel("vehicleType", true);
   };
 
-  const togglePanel = (panelName, value) => {
-    const requiresLocations = [
-      "vehicleType",
-      "confirmRide",
-      "lookingForCaptain",
-      "waitingCaptain",
-    ].includes(panelName);
-
-    if (requiresLocations && value && !isLocationsSet()) {
-      alert("Please set both pickup and drop-off locations");
-      return;
-    }
-
-    setPanels((prev) => ({ ...prev, [panelName]: value }));
-  };
-
   const fetchSuggestions = async (input) => {
     try {
       const response = await axios.get(
@@ -229,11 +235,11 @@ const RiderHome = () => {
   };
 
   const renderPanel = (key, component) => {
+    // Only these panels require pickup and drop-off to be set
     const requiresLocations = [
       "vehicleTypePanel",
       "confirmRidePanel",
       "lookingForCaptainPanel",
-      "waitingCaptainPanel",
     ].includes(key);
 
     if (requiresLocations && !isLocationsSet()) {
@@ -263,19 +269,6 @@ const RiderHome = () => {
       <div ref={refs.logoutButton} className="absolute top-0 right-0">
         <RiderLogoutButton />
       </div>
-      {/* <button
-        className="absolute z-[3000] top-10 left-4 bg-green-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-green-600 transition duration-300"
-        onClick={() => {
-          if (!isLocationsSet()) {
-            alert("Please set both pickup and drop-off locations");
-            return;
-          }
-          togglePanel("waitingCaptain", true);
-        }}
-      >
-        Find Captain
-      </button> */}
-      {/* Map */}
       <div ref={refs.map} className="h-full w-full">
         <MapContainer
           center={[51.505, -0.09]}
@@ -400,14 +393,29 @@ const RiderHome = () => {
         {/* {console.log(startPoint, endPoint)} */}
         {renderPanel(
           "waitingCaptainPanel",
-          <WaitingCaptainPanel
-            setWaitingCaptainPannel={(value) =>
+          <WaitingCaptainPannel
+            setWaitingCaptainPanel={(value) =>
               togglePanel("waitingCaptain", value)
             }
             startPoint={startPoint}
             endPoint={endPoint}
             confirmRideImage={confirmRideImage}
             fare={fare}
+            captainAssigned={
+              captainAssigned
+                ? captainAssigned
+                : {
+                    fullname: {
+                      firstname: " firstname",
+                      lastname: "lastname",
+                    },
+                    vehicleInfo: {
+                      plate: "plate",
+                      vehicleType: "vehicleType",
+                    },
+                  }
+            }
+            ride={ride}
           />
         )}
         {/* {console.log(startPoint, endPoint)} */}

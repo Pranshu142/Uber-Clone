@@ -15,6 +15,7 @@ import { gsap } from "gsap";
 import CaptainConfirmRide from "../components/CaptainConfirmRide";
 import { SocketContext } from "../context/SocketContext.jsx";
 import { CaptainDataContext } from "../context/CaptainContext.jsx";
+import axios from "axios";
 
 const LocationMarker = () => {
   const [position, setPosition] = useState(null);
@@ -42,6 +43,7 @@ const CaptainHome = () => {
   const [CaptainConfirmRidePanelOpen, setCaptainConfirmRidePanelOpen] =
     useState(false);
   const [ridePopUpPanelOpen, setRidePopUpPanelOpen] = useState(false);
+  const [ride, setRide] = useState(null);
 
   const { socket } = useContext(SocketContext);
   const { captain } = useContext(CaptainDataContext);
@@ -67,11 +69,6 @@ const CaptainHome = () => {
         (error) => {
           console.log(error);
           alert(`${Error(error.code)}: ${error.message}`);
-        },
-        {
-          enableHighAccuracy: false,
-          timeout: 20000,
-          maximumAge: 1000,
         }
       );
       console.log(watchId);
@@ -80,16 +77,42 @@ const CaptainHome = () => {
     }
 
     socket.on("ride-request", (data) => {
-      const { ride, rider } = data;
-      console.log(ride, rider);
+      const { ride } = data;
+      setRide(ride);
+      console.log(ride);
       setRidePopUpPanelOpen(true);
     });
 
     return () => {
       navigator.geolocation.clearWatch(watchId);
       socket.off("ride-request");
+      socket.off("join");
     };
   }, [captain, socket]);
+
+  const confirmRideButton = async () => {
+    if (!ride) {
+      console.error("No ride selected");
+      return;
+    }
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/ride/confirm-ride`,
+        {
+          rideId: ride._id,
+          captain: captain,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("captain-token")}`,
+          },
+        }
+      );
+    } catch (e) {
+      console.log(e);
+    }
+    setCaptainConfirmRidePanelOpen(true);
+  };
 
   useGSAP(() => {
     gsap.to(ridePopUp.current, {
@@ -143,7 +166,8 @@ const CaptainHome = () => {
       >
         <RideAcceptPopUp
           setRidePopUpPanelOpen={setRidePopUpPanelOpen}
-          setCaptainConfirmRidePanelOpen={setCaptainConfirmRidePanelOpen}
+          confirmRideButton={confirmRideButton}
+          ride={ride}
         />
       </div>
 
@@ -155,6 +179,7 @@ const CaptainHome = () => {
         <CaptainConfirmRide
           setRidePopUpPanelOpen={setRidePopUpPanelOpen}
           setCaptainConfirmRidePanelOpen={setCaptainConfirmRidePanelOpen}
+          ride={ride}
         />
       </div>
     </div>

@@ -1,4 +1,8 @@
-import { createRide, calculateFair } from "../services/ride.service.js";
+import {
+  createRide,
+  calculateFair,
+  confirmRide,
+} from "../services/ride.service.js";
 import riderModel from "../models/rider.models.js";
 import rideModel from "../models/ride.model.js";
 import { validationResult } from "express-validator";
@@ -88,5 +92,24 @@ export const calculateAmount = async (req, res) => {
   } catch (error) {
     console.error("Error calculating fare:", error.message);
     return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const confirmRideRequest = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors });
+  }
+
+  const { rideId, captain } = req.body;
+
+  try {
+    const ride = await confirmRide({ rideId, captain });
+    console.log(ride.rider.socketId);
+    Socket.sendMessage(ride.rider.socketId, "ride-confirmed", ride);
+    return res.status(200).json(ride);
+  } catch (error) {
+    console.error("Error confirming ride:", error);
+    return res.status(500).json({ error: "Failed to confirm ride" });
   }
 };
