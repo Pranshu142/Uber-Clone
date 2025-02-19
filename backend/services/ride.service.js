@@ -105,7 +105,7 @@ export const confirmRide = async ({ rideId, captain }) => {
     },
     {
       captain: captain._id,
-      status: "in-progress",
+      status: "accepted",
     }
   );
 
@@ -117,17 +117,24 @@ export const confirmRide = async ({ rideId, captain }) => {
   return ride;
 };
 
-export const rideStarted = async (rideId) => {
+export const rideStarted = async (rideId, otp) => {
   if (!rideId) {
     throw new Error("rideId is required");
   }
-  const ride = await RideModel.findOneAndUpdate(
-    {
-      _id: rideId,
-    },
-    {
-      status: "in-progress",
-    }
-  );
+  const ride = await RideModel.findOne({
+    _id: rideId,
+  })
+    .populate("rider")
+    .populate("captain")
+    .select("+otp");
+  if (ride.otp != otp) {
+    throw new Error("Invalid OTP");
+  }
+  if (ride.status !== "accepted") {
+    throw new Error("Ride is not accepted");
+  }
+  ride.status = "ongoing";
+  ride.startTime = new Date();
+  await ride.save();
   return ride;
 };

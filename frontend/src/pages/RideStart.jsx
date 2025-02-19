@@ -1,35 +1,9 @@
 import { MapPin, Coins } from "lucide-react";
-import { useState } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
+// import { useState } from "react";
 import Rings from "react-loading-icons/dist/esm/components/rings";
 
 import RiderLogoutButton from "../components/RiderLogoutButton";
-
-const LocationMarker = () => {
-  const [position, setPosition] = useState(null);
-
-  const map = useMapEvents({
-    click() {
-      map.locate();
-    },
-    locationfound(e) {
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
-  });
-
-  return position === null ? null : (
-    <Marker position={position}>
-      <Popup>You are here</Popup>
-    </Marker>
-  );
-};
+import LiveTracking from "../components/LiveTracking.jsx";
 
 const RideStart = () => {
   return (
@@ -43,20 +17,7 @@ const RideStart = () => {
       <RiderLogoutButton className="absolute top-0 right-0" />
 
       {/* Map */}
-      <div className="h-full w-full">
-        <MapContainer
-          center={[51.505, -0.09]}
-          zoom={13}
-          scrollWheelZoom={false}
-          className="h-screen w-screen"
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <LocationMarker />
-        </MapContainer>
-      </div>
+      <LiveTracking />
 
       {/* Ride Info Panel */}
       <div className="flex flex-col items-start gap-5 px-4 py-5 absolute bottom-0 h-[60vh] md:h-[50vh] z-[1001] w-full bg-white shadow-lg shadow-gray-300 overflow-y-auto rounded-t-3xl">

@@ -120,9 +120,9 @@ export const rideStartedInfo = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors });
   }
-  const { rideId } = req.body;
+  const { rideId, otp } = req.query;
   try {
-    const ride = await rideStarted(rideId);
+    const ride = await rideStarted(rideId, otp, req.captain);
 
     Socket.sendMessage(ride.rider.socketId, "ride-started", ride);
     return res.status(200).json(ride);

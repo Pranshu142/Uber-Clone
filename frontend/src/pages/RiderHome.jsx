@@ -1,6 +1,6 @@
 // Import React and hooks
 import { useState, useRef, useEffect, useContext } from "react";
-
+import { useNavigate } from "react-router-dom";
 // Import Map related dependencies
 import {
   MapContainer,
@@ -131,6 +131,7 @@ const RiderHome = () => {
 
   const { socket } = useContext(SocketContext);
   const { rider } = useContext(RiderDataContext);
+  const navigate = useNavigate();
   // console.log(rider);
   useEffect(() => {
     // console.log(socket);
@@ -145,8 +146,16 @@ const RiderHome = () => {
       togglePanel("waitingCaptain", true);
     });
 
+    socket.on("ride-started", (data) => {
+      console.log(data);
+      setRide(data);
+      togglePanel("waitingCaptain", false);
+      navigate("/riding", { status: { ride: data } });
+    });
+
     return () => {
       socket.off("ride-confirmed");
+      socket.off("ride-started");
       socket.off("join");
     };
   }, [socket, rider]);

@@ -1,14 +1,41 @@
 import { Coins, MapPin, MapPinOff } from "lucide-react";
 import PropTypes from "prop-types";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // import { Link } from "react-router-dom";
 const CaptainConfirmRide = ({
   setRidePopUpPanelOpen,
   setCaptainConfirmRidePanelOpen,
   ride,
 }) => {
-  const verifyOtpAndStartRide = () => {
+  const [otp, setOtp] = useState("");
+  const navigate = useNavigate();
+  const verifyOtpAndStartRide = async (e) => {
     // verify otp and start ride
-    console.log("ride started");
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/ride/ride-started`,
+        null,
+        {
+          params: {
+            rideId: ride._id,
+            otp,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("captain-token")}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        navigate("/captain-riding", { status: { ride: response.data } });
+        setRidePopUpPanelOpen(false);
+        setCaptainConfirmRidePanelOpen(false);
+      }
+    } catch (error) {
+      console.error("Error starting ride:", error);
+    }
   };
   return (
     <>
@@ -58,17 +85,18 @@ const CaptainConfirmRide = ({
           {ride ? ride.fare : "100"}
         </h3>
       </div>
-      <form className="w-full">
+      <form className="w-full" onSubmit={verifyOtpAndStartRide}>
         <input
           className="w-full border-2 rounded-lg px-8 md:px-10 py-3 md:py-4 text-base md:text-lg bg-gray-200"
           type="text"
           placeholder="Enter your OTP"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
         />
         <div className="container-4 flex items-center justify-between ">
           <button
             to={"/captain-riding"}
             className="bg-green-300 px-5 py-4 rounded-full mt-5 text-xl sm:text-2xl font-semibold active:border-2 active:border-black transition-all duration-200"
-            onClick={verifyOtpAndStartRide}
           >
             Confirm Ride
           </button>
@@ -91,6 +119,7 @@ CaptainConfirmRide.propTypes = {
   setRidePopUpPanelOpen: PropTypes.func.isRequired,
   setCaptainConfirmRidePanelOpen: PropTypes.func.isRequired,
   ride: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
     rider: PropTypes.shape({
       fullname: PropTypes.shape({
         firstname: PropTypes.string.isRequired,
