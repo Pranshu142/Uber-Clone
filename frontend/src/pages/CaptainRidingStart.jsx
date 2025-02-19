@@ -1,35 +1,12 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import CaptainLogoutButton from "../components/CaptainLogoutButton";
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  useMapEvents,
-} from "react-leaflet";
+import LiveTracking from "../components/LiveTracking";
+
 import { Coins, MapPin, MapPinOff } from "lucide-react";
 import { Link } from "react-router-dom";
-const LocationMarker = () => {
-  const [position, setPosition] = useState(null);
-  const map = useMapEvents({
-    locationfound(e) {
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
-  });
 
-  useEffect(() => {
-    map.locate();
-  }, [map]);
-
-  return position === null ? null : (
-    <Marker position={position}>
-      <Popup>You are here</Popup>
-    </Marker>
-  );
-};
 const CaptainRidingStart = () => {
   const completeRideRef = useRef(null);
   const [completeRidePanelOpen, setCompleteRidePanelOpen] = useState(false);
@@ -55,20 +32,7 @@ const CaptainRidingStart = () => {
       <div>
         <CaptainLogoutButton />
       </div>
-      <div className="h-full w-full">
-        <MapContainer
-          center={[51.505, -0.09]}
-          zoom={16}
-          scrollWheelZoom={true}
-          className="h-screen w-screen"
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <LocationMarker />
-        </MapContainer>
-      </div>
+      <LiveTracking />
 
       {/* Ride Started Panel */}
       <div className="absolute bg-white h-1/5 z-[1001] w-full bottom-0 flex flex-col gap-3 items-center px-3 py-5 rounded-t-3xl border-2 border-gray-400 shadow-md sm:h-[25%]">

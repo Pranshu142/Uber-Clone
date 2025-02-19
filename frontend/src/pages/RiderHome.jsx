@@ -1,15 +1,7 @@
 // Import React and hooks
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-// Import Map related dependencies
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import LiveTracking from "../components/LiveTracking.jsx";
 
 // Import Animation libraries
 import { useGSAP } from "@gsap/react";
@@ -33,28 +25,6 @@ import { RiderDataContext } from "../context/RiderContext.jsx";
  * LocationMarker Component
  * Handles user's current location on the map
  */
-const LocationMarker = () => {
-  const [position, setPosition] = useState(null);
-
-  // Map event handlers
-  const map = useMapEvents({
-    locationfound(e) {
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
-  });
-
-  // Locate user on component mount
-  useEffect(() => {
-    map.locate();
-  }, [map]);
-
-  return position === null ? null : (
-    <Marker position={position}>
-      <Popup>You are here</Popup>
-    </Marker>
-  );
-};
 
 /**
  * RiderHome Component
@@ -280,20 +250,7 @@ const RiderHome = () => {
       <div ref={refs.logoutButton} className="absolute top-0 right-0">
         <RiderLogoutButton />
       </div>
-      <div ref={refs.map} className="h-full w-full">
-        <MapContainer
-          center={[51.505, -0.09]}
-          zoom={16}
-          scrollWheelZoom={true}
-          className="h-screen w-screen"
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <LocationMarker />
-        </MapContainer>
-      </div>
+      <LiveTracking />
 
       {/* Booking Form */}
       <div className="absolute justify-end flex flex-col h-screen top-0 w-screen z-[1001]">

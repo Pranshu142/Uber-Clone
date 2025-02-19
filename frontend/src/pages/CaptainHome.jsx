@@ -1,12 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-} from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import LiveTracking from "../components/LiveTracking.jsx";
 import CaptainLogoutButton from "../components/CaptainLogoutButton";
 import CaptainDetails from "../components/CaptainDetails";
 import RideAcceptPopUp from "../components/RideAcceptPopUp";
@@ -16,26 +9,6 @@ import CaptainConfirmRide from "../components/CaptainConfirmRide";
 import { SocketContext } from "../context/SocketContext.jsx";
 import { CaptainDataContext } from "../context/CaptainContext.jsx";
 import axios from "axios";
-
-const LocationMarker = () => {
-  const [position, setPosition] = useState(null);
-  const map = useMapEvents({
-    locationfound(e) {
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
-  });
-
-  useEffect(() => {
-    map.locate();
-  }, [map]);
-
-  return position === null ? null : (
-    <Marker position={position}>
-      <Popup>You are here</Popup>
-    </Marker>
-  );
-};
 
 const CaptainHome = () => {
   const ridePopUp = useRef(null);
@@ -141,18 +114,7 @@ const CaptainHome = () => {
       />
 
       {/* Map */}
-      <MapContainer
-        center={[51.505, -0.09]}
-        zoom={16}
-        scrollWheelZoom
-        className="h-screen w-screen"
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <LocationMarker />
-      </MapContainer>
+      <LiveTracking />
 
       {/* Basic Ride Info */}
       <div className="fixed bg-gray-100 h-[50vh] lg:max-xl:h-[40vh] z-[1001] w-full bottom-0 flex flex-col gap-4 items-center px-4 py-5 rounded-t-3xl border-t border-gray-300 shadow-lg">
