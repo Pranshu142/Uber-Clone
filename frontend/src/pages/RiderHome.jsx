@@ -47,7 +47,7 @@ const RiderHome = () => {
   const [vehicleType, setVehicleType] = useState("");
   const [confirmRideImage, setConfirmRideImage] = useState("");
   const [fare, setFare] = useState(0);
-  const [activeInput, setActiveInput] = useState(null);
+  const [activeInput, setActiveInput] = useState("");
   const [captainAssigned, setCaptainAssigned] = useState(null);
   const [ride, setRide] = useState(null);
 

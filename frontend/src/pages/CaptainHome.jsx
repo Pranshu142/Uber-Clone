@@ -10,26 +10,66 @@ import { SocketContext } from "../context/SocketContext.jsx";
 import { CaptainDataContext } from "../context/CaptainContext.jsx";
 import axios from "axios";
 
+/**
+ * CaptainHome component - Main interface for ride-share captains/drivers
+ *
+ * Handles real-time location tracking, ride request notifications, and ride confirmations.
+ * Manages multiple animated panels for ride requests and confirmations using GSAP.
+ * Integrates with WebSocket for real-time communication.
+ *
+ * @component
+ * @requires react
+ * @requires gsap
+ * @requires axios
+ * @requires SocketContext
+ * @requires CaptainDataContext
+ *
+ * @example
+ * return (
+ *   <CaptainHome />
+ * )
+ *
+ * State:
+ * - ride: Current ride details
+ * - ridePopUpPanelOpen: Controls ride request popup visibility
+ * - CaptainConfirmRidePanelOpen: Controls ride confirmation panel visibility
+ *
+ * Effects:
+ * - Initializes WebSocket connection
+ * - Sets up continuous geolocation tracking
+ * - Handles incoming ride requests
+ * - Manages cleanup of location tracking and socket listeners
+ *
+ * @returns {JSX.Element} Captain's home interface with map, ride requests, and confirmation panels
+ */
+
 const CaptainHome = () => {
+  // Refs for animation targets
   const ridePopUp = useRef(null);
   const CaptainConfirmRideRef = useRef(null);
+
+  // State management
   const [CaptainConfirmRidePanelOpen, setCaptainConfirmRidePanelOpen] =
     useState(false);
   const [ridePopUpPanelOpen, setRidePopUpPanelOpen] = useState(false);
   const [ride, setRide] = useState(null);
 
+  // Context hooks
   const { socket } = useContext(SocketContext);
   const { captain } = useContext(CaptainDataContext);
 
   useEffect(() => {
+    // Join socket room as captain
     socket.emit("join", {
       userType: "captain",
       userId: captain._id,
     });
 
+    // Setup geolocation tracking
     let watchId;
     if (navigator.geolocation) {
       watchId = navigator.geolocation.watchPosition(
+        // Success callback - emit location updates
         (position) => {
           socket.emit("update-captain-location", {
             userId: captain._id,
@@ -39,6 +79,7 @@ const CaptainHome = () => {
             },
           });
         },
+        // Error callback
         (error) => {
           console.log(error);
           alert(`${Error(error.code)}: ${error.message}`);
@@ -49,6 +90,7 @@ const CaptainHome = () => {
       alert("Geolocation is not supported by this browser.");
     }
 
+    // Listen for incoming ride requests
     socket.on("ride-request", (data) => {
       const { ride } = data;
       setRide(ride);
@@ -56,6 +98,7 @@ const CaptainHome = () => {
       setRidePopUpPanelOpen(true);
     });
 
+    // Cleanup function
     return () => {
       navigator.geolocation.clearWatch(watchId);
       socket.off("ride-request");
@@ -63,6 +106,10 @@ const CaptainHome = () => {
     };
   }, [captain, socket]);
 
+  /**
+   * Handle ride confirmation by captain
+   * Makes API call to confirm ride and updates UI
+   */
   const confirmRideButton = async () => {
     if (!ride) {
       console.error("No ride selected");
@@ -87,6 +134,7 @@ const CaptainHome = () => {
     setCaptainConfirmRidePanelOpen(true);
   };
 
+  // GSAP animation for ride popup panel
   useGSAP(() => {
     gsap.to(ridePopUp.current, {
       translateY: ridePopUpPanelOpen ? "0%" : "100%",
@@ -95,6 +143,7 @@ const CaptainHome = () => {
     });
   }, [ridePopUpPanelOpen]);
 
+  // GSAP animation for ride confirmation panel
   useGSAP(() => {
     gsap.to(CaptainConfirmRideRef.current, {
       translateY: CaptainConfirmRidePanelOpen ? "0%" : "100%",
@@ -106,22 +155,18 @@ const CaptainHome = () => {
 
   return (
     <div className="h-screen w-screen relative overflow-hidden">
-      {/* Logout Button */}
-      <CaptainLogoutButton
-        className="absolute top-4 right-4 z-[1001]"
-        setRidePopUpPanelOpen={setRidePopUpPanelOpen}
-        ridePopUpPanelOpen={ridePopUpPanelOpen}
-      />
+      {/* Logout Button Component */}
+      <CaptainLogoutButton className="absolute top-4 right-4 z-[1001]" />
 
-      {/* Map */}
+      {/* Live Map Tracking Component */}
       <LiveTracking />
 
-      {/* Basic Ride Info */}
+      {/* Captain Details Panel */}
       <div className="fixed bg-gray-100 h-[50vh] lg:max-xl:h-[40vh] z-[1001] w-full bottom-0 flex flex-col gap-4 items-center px-4 py-5 rounded-t-3xl border-t border-gray-300 shadow-lg">
         <CaptainDetails />
       </div>
 
-      {/* Ride Pop-Up */}
+      {/* Ride Request Pop-up Panel */}
       <div
         ref={ridePopUp}
         className="fixed w-full bottom-0 translate-y-full z-[1001] bg-white shadow-lg flex flex-col gap-4 items-center px-4 py-6 rounded-t-3xl border-t border-gray-300"
@@ -133,7 +178,7 @@ const CaptainHome = () => {
         />
       </div>
 
-      {/* Confirm Ride Panel */}
+      {/* Ride Confirmation Panel */}
       <div
         ref={CaptainConfirmRideRef}
         className="fixed w-full bottom-0 translate-y-full z-[1002] bg-white shadow-lg flex flex-col gap-4 items-center px-4 py-6 rounded-t-3xl border-t border-gray-300 min-w-[200px]"

@@ -11,6 +11,7 @@ const StartPage = () => {
         />
         <div className="bg-white w-full flex flex-col justify-center items-center py-5 px-5">
           <h2 className="font-bold text-2xl">Get Started with Uber</h2>
+          {/* navigation link to take the user to the login and sign up page */}
           <Link
             to="/login"
             className="flex justify-center items-center bg-black text-white rounded py-1.5 mt-2 w-full hover:bg-gray-800 transition-all duration-200"

@@ -1,6 +1,24 @@
 import { ChevronDown, Coins, MapPin, MapPinOff } from "lucide-react";
 import PropTypes from "prop-types";
 
+/**
+ * A component that displays a popup for accepting or rejecting a ride request.
+ *
+ * @component
+ * @param {Object} props - The component props
+ * @param {Function} props.setRidePopUpPanelOpen - Function to control the visibility of the popup
+ * @param {Function} props.confirmRideButton - Function to handle ride confirmation
+ * @param {Object} props.ride - The ride details object
+ * @param {Object} props.ride.rider - The rider information
+ * @param {Object} props.ride.rider.fullname - The rider's full name object
+ * @param {string} props.ride.rider.fullname.firstname - The rider's first name
+ * @param {string} props.ride.startLocation - The pickup location
+ * @param {string} props.ride.endLocation - The drop-off location
+ * @param {string|number} props.ride.distance - The ride distance
+ * @param {string|number} props.ride.fare - The ride fare
+ *
+ * @returns {JSX.Element} A popup component with ride details and accept/reject buttons
+ */
 const RideAcceptPopUp = ({
   setRidePopUpPanelOpen,
   confirmRideButton,

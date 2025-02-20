@@ -7,7 +7,7 @@ import {
 import riderModel from "../models/rider.models.js";
 import rideModel from "../models/ride.model.js";
 import { validationResult } from "express-validator";
-import captainModel from "../models/captain.models.js";
+// import captainModel from "../models/captain.models.js";
 import { getCaptainsNearby } from "../services/maps.service.js";
 import getPosition from "../services/maps.service.js";
 import Socket from "../socket.js";

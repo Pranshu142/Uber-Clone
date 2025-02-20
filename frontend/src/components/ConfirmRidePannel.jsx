@@ -3,19 +3,19 @@ import PropTypes from "prop-types";
 import { Coins, MapPin, MapPinOff, ChevronDown } from "lucide-react";
 import axios from "axios";
 
-const LocationButton = memo(({ icon: Icon, address }) => (
-  <button className="flex items-center gap-3 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 active:border-2 active:border-black w-full text-left transition-colors">
+const LocationInfo = ({ icon: Icon, address }) => (
+  <div className="flex items-center gap-3 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 active:border-2 active:border-black w-full text-left transition-colors">
     <Icon className="h-6 w-6 text-gray-700 flex-shrink-0" />
     <h3 className="text-md sm:text-lg font-semibold line-clamp-2">{address}</h3>
-  </button>
-));
+  </div>
+);
 
-LocationButton.propTypes = {
+LocationInfo.propTypes = {
   icon: PropTypes.elementType.isRequired,
   address: PropTypes.string.isRequired,
 };
 
-LocationButton.displayName = "LocationButton";
+LocationInfo.displayName = "LocationInfo";
 
 const ConfirmRidePanel = ({
   setLookingForCaptainPannel,
@@ -83,13 +83,13 @@ const ConfirmRidePanel = ({
       </div>
 
       <div className="flex flex-col w-full gap-4">
-        <LocationButton icon={MapPinOff} address={startPoint} />
-        <LocationButton icon={MapPin} address={endPoint} />
+        <LocationInfo icon={MapPinOff} address={startPoint} />
+        <LocationInfo icon={MapPin} address={endPoint} />
 
-        <button className="flex items-center gap-3 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 active:border-2 active:border-black w-full text-left transition-colors">
+        <div className="flex items-center gap-3 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-4 active:border-2 active:border-black w-full text-left transition-colors">
           <Coins className="h-6 w-6 text-gray-700 flex-shrink-0" />
           <h3 className="text-md sm:text-lg font-semibold">₹{fare}</h3>
-        </button>
+        </div>
       </div>
 
       <button

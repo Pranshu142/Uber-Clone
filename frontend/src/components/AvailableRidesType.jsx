@@ -181,6 +181,7 @@ AvailableRidesPanel.propTypes = {
   setFare: PropTypes.func.isRequired,
   endPoint: PropTypes.string.isRequired,
   setConfirmRideImage: PropTypes.func.isRequired,
+  setVehicleType: PropTypes.func.isRequired,
   rides: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
