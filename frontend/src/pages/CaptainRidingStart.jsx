@@ -3,9 +3,11 @@ import gsap from "gsap";
 import { useRef, useState } from "react";
 import CaptainLogoutButton from "../components/CaptainLogoutButton";
 import LiveTracking from "../components/LiveTracking";
+import { useLocation } from "react-router-dom";
 
 import { Coins, MapPin, MapPinOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 /**
  * CaptainRidingStart Component
@@ -30,7 +32,30 @@ const CaptainRidingStart = () => {
   const completeRideRef = useRef(null);
   // State to control complete ride panel visibility
   const [completeRidePanelOpen, setCompleteRidePanelOpen] = useState(false);
-
+  const location = useLocation();
+  const ride = location.state.ride;
+  const navigate = useNavigate();
+  // Function to complete the ride
+  const handleRideComplete = async () => {
+    try {
+      await axios
+        .post(`${import.meta.env.VITE_BASE_URL}/ride/ride-completed`, null, {
+          params: {
+            rideId: ride._id,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("captain-token")}`,
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            navigate("/captain-home");
+          }
+        });
+    } catch (error) {
+      console.error("Error completing ride:", error);
+    }
+  };
   // GSAP animation for sliding the complete ride panel
   useGSAP(() => {
     if (completeRidePanelOpen) {
@@ -77,7 +102,7 @@ const CaptainRidingStart = () => {
       >
         {/* Panel header */}
         <div className="flex justify-center sm:justify-start items-center w-full">
-          <h2 className="text-lg sm:text-2xl font-bold text-center">
+          <h2 className="text-3xl sm:text-2xl font-bold text-center">
             Finish your ride!!
           </h2>
         </div>
@@ -89,18 +114,26 @@ const CaptainRidingStart = () => {
               src="https://media.smallbiztrends.com/2023/07/How-to-Become-an-Uber-Driver.png"
               className="h-16 w-16 sm:h-20 sm:w-20 object-center object-cover rounded-full"
             />
-            <h3 className="text-sm sm:text-lg">Rider Name</h3>
+            <h3 className="text-lg sm:text-lg font-bold">
+              {ride ? ride.rider.fullname.firstname : "Rider Name"}
+            </h3>
           </div>
-          <h3 className="text-sm sm:text-lg w-full text-center sm:text-end">
-            Distance
+          <h3 className="text-lg sm:text-lg w-full text-center sm:text-end font-bold">
+            {ride ? ride.distance : "Distance in Km"} km
           </h3>
         </div>
 
         {/* Ride details with icons */}
         {[
-          { icon: <MapPin />, text: "Pickup Location" },
-          { icon: <MapPinOff />, text: "Drop Location" },
-          { icon: <Coins />, text: "₹60" },
+          {
+            icon: <MapPin />,
+            text: ride ? ride.startLocation : "Pickup Location",
+          },
+          {
+            icon: <MapPinOff />,
+            text: ride ? ride.endLocation : "Drop Location",
+          },
+          { icon: <Coins />, text: ride ? ride.fare : "50" },
         ].map((item, index) => (
           <div
             key={index}
@@ -112,12 +145,12 @@ const CaptainRidingStart = () => {
         ))}
 
         {/* Navigation button to complete ride */}
-        <Link
-          to={"/captain-home"}
+        <button
+          onClick={handleRideComplete}
           className="bg-green-300 w-full px-4 py-3 sm:px-5 sm:py-4 rounded-full text-center text-lg sm:text-xl font-semibold active:border-2 active:border-black transition-all duration-200"
         >
           Finish Ride
-        </Link>
+        </button>
       </div>
     </div>
   );

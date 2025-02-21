@@ -48,7 +48,7 @@ const CaptainConfirmRide = ({
       );
       // checking for the response and  if the status is 200 then the ride is started and the captain is redirected to the captain-riding page
       if (response.status === 200) {
-        navigate("/captain-riding", { status: { ride: response.data } });
+        navigate("/captain-riding", { state: { ride: response.data } });
         setRidePopUpPanelOpen(false);
         setCaptainConfirmRidePanelOpen(false);
       }

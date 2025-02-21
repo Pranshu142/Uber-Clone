@@ -3,6 +3,7 @@ import createRideController, {
   calculateAmount,
   confirmRideRequest,
   rideStartedInfo,
+  rideCompletedInfo,
 } from "../controller/ride.controller.js";
 import riderAuth, { captainAuth } from "../middlewares/auth.js";
 import { body, query } from "express-validator";
@@ -47,5 +48,12 @@ router.post(
     .isLength({ min: 6, max: 6 })
     .withMessage("provide a valid otp"),
   rideStartedInfo
+);
+
+router.post(
+  "/ride-completed",
+  captainAuth,
+  query("rideId").isMongoId().withMessage("provide a valid id"),
+  rideCompletedInfo
 );
 export default router;

@@ -120,7 +120,7 @@ const RiderHome = () => {
       console.log(data);
       setRide(data);
       togglePanel("waitingCaptain", false);
-      navigate("/riding", { status: { ride: data } });
+      navigate("/riding", { state: { ride: data } });
     });
 
     return () => {

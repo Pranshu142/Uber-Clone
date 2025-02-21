@@ -69,6 +69,49 @@ const captainSchema = new Schema({
       default: [0, 0],
     },
   },
+  rideEarnings: [
+    {
+      ride: {
+        type: Schema.ObjectId,
+        ref: "rides",
+      },
+      amount: {
+        type: Number,
+        required: true,
+        default: 0,
+      },
+    },
+  ],
+  totalEarnings: {
+    type: Number,
+    default: 0,
+  },
+  totalRides: {
+    type: Number,
+    default: 0,
+  },
+  ratings: [
+    {
+      ride: {
+        type: Schema.ObjectId,
+        ref: "rides",
+      },
+      value: {
+        type: Number,
+        min: 0,
+        max: 5,
+        default: 0,
+      },
+    },
+  ],
+  averageRating: {
+    type: Number,
+    default: 0,
+  },
+  totalTimeSpends: {
+    type: Number,
+    default: 0,
+  },
 });
 captainSchema.index({ location: "2dsphere" });
 captainSchema.methods.generateToken = function () {

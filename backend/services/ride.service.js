@@ -138,3 +138,21 @@ export const rideStarted = async (rideId, otp) => {
   await ride.save();
   return ride;
 };
+
+export const rideCompleted = async (rideId) => {
+  if (!rideId) {
+    throw new Error("rideId is required");
+  }
+  const ride = await RideModel.findOne({
+    _id: rideId,
+  })
+    .populate("rider")
+    .populate("captain");
+  if (ride.status !== "ongoing") {
+    throw new Error("Ride is not ongoing");
+  }
+  ride.status = "completed";
+  ride.endTime = new Date();
+  await ride.save();
+  return ride;
+};
