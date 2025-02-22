@@ -1,12 +1,11 @@
 import express from "express";
 const router = express.Router();
-import { body, query } from "express-validator";
+import { body } from "express-validator";
 import { captainAuth } from "../middlewares/auth.js";
 import registerCaptain, {
   loginCaptain,
   captainProfile,
   logout,
-  captainRideDetailsUpdation,
 } from "../controller/captain.controller.js";
 
 /* POST register a new rider */
@@ -50,14 +49,5 @@ router.post(
 
 router.get("/profile", captainAuth, captainProfile);
 router.post("/logout", captainAuth, logout);
-router.post(
-  "/captain-ride-details-updation",
-  captainAuth,
-  [
-    query("rideId").isMongoId().withMessage("provide a valid id"),
-    query("captainId").isMongoId().withMessage("provide a valid id"),
-  ],
-  captainRideDetailsUpdation
-);
 
 export default router;

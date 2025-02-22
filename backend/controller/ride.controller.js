@@ -138,6 +138,9 @@ export const rideCompletedInfo = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors });
   }
+  if (!req.query || !req.query.rideId) {
+    return res.status(400).json({ error: "Ride ID is required" });
+  }
   const { rideId } = req.query;
   try {
     const ride = await rideCompleted(rideId);

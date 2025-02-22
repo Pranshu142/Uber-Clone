@@ -123,6 +123,11 @@ const RiderHome = () => {
       navigate("/riding", { state: { ride: data } });
     });
 
+    socket.on("payment-done", (data) => {
+      console.log("please give the captains rating", data);
+      navigate("/rider-home");
+    });
+
     return () => {
       socket.off("ride-confirmed");
       socket.off("ride-started");

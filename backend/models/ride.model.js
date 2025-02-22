@@ -63,4 +63,4 @@ const rideSchema = new Schema(
     timestamps: true,
   }
 );
-export default model("ride", rideSchema);
+export default model("rides", rideSchema);

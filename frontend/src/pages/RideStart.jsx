@@ -1,56 +1,73 @@
 import { MapPin, Coins } from "lucide-react";
-// import { useState } from "react";
 import Rings from "react-loading-icons/dist/esm/components/rings";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import RiderLogoutButton from "../components/RiderLogoutButton";
 import LiveTracking from "../components/LiveTracking.jsx";
 import { SocketContext } from "../context/SocketContext.jsx";
-import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+
 const RideStart = () => {
   const location = useLocation();
   const ride = location.state.ride;
   const navigate = useNavigate();
   const { socket } = useContext(SocketContext);
+
+  // paymentAllowed determines if the button is enabled for payment
+  const [paymentAllowed, setPaymentAllowed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // When ride status changes, enable payment if the ride is completed
   useEffect(() => {
-    socket.on("ride-completed", () => {
-      navigate("/rider-home");
-    });
-  }, [socket, navigate]);
-  // console.log(ride);
+    if (ride && ride.status === "completed") {
+      setPaymentAllowed(true);
+    }
+  }, [ride]);
 
   const handlePaymentHandler = async () => {
     try {
-      await axios
-        .post(
-          `${
-            import.meta.env.VITE_BASE_URL
-          }/captains/captain-ride-details-updation`,
-          null,
-          {
-            params: {
-              rideId: ride._id,
-              captainId: ride.captain._id,
-            },
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            navigate("/rider-home");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      setIsLoading(true);
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/riders/captain-ride-details-updation`,
+        null,
+        {
+          params: {
+            rideId: ride._id,
+            captainId: ride.captain._id,
+          },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // After a successful payment, disable the button
+        setPaymentAllowed(false);
+        alert("Payment successful!");
+        navigate("/rider-home");
+        // Notify via socket that payment is completed
+        socket.emit("payment-completed", { rideId: ride._id });
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Payment failed:", error);
+      alert("Payment failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // Listen for the complete ride event from socket to redirect to home
+  useEffect(() => {
+    socket.on("ride-completed", () => {
+      // navigate("/rider-home");
+      setPaymentAllowed(true);
+    });
+    return () => {
+      socket.off("ride-completed");
+    };
+  }, [socket, navigate]);
+
   return (
     <div className="relative h-screen w-screen">
       {/* Uber Logo */}
@@ -91,32 +108,36 @@ const RideStart = () => {
           {/* Pickup Location */}
           <div className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-3 sm:py-4 md:py-5 active:border-2 active:border-black w-full text-left">
             <MapPin className="h-5 w-5 sm:h-6 sm:w-6" />
-            <h3 className="text-xs sm:text-sm md:text-lg font-semibold">
+            <h3 className="text-xl sm:text-sm md:text-lg font-semibold">
               {ride ? ride.startLocation : "Pickup Location"}
             </h3>
           </div>
-          {/* Pickup Location */}
+          {/* Dropoff Location */}
           <div className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-3 sm:py-4 md:py-5 active:border-2 active:border-black w-full text-left">
             <MapPin className="h-5 w-5 sm:h-6 sm:w-6" />
-            <h3 className="text-xs sm:text-sm md:text-lg font-semibold">
-              {ride ? ride.endLocation : "Pickup Location"}
+            <h3 className="text-xl sm:text-sm md:text-lg font-semibold">
+              {ride ? ride.endLocation : "Drop Location"}
             </h3>
           </div>
-
           {/* Fare Details */}
           <div className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 rounded-2xl px-3 py-3 sm:py-4 md:py-5 active:border-2 active:border-black w-full text-left">
             <Coins className="h-5 w-5 sm:h-6 sm:w-6" />
-            <h3 className="text-xs sm:text-sm md:text-lg font-semibold">
+            <h3 className="text-xl sm:text-sm md:text-lg font-semibold">
               {ride ? ride.fare : "50"}
             </h3>
           </div>
 
           {/* Payment Button */}
           <button
-            className="bg-green-400 hover:bg-green-500 px-3 py-3 sm:py-4 md:py-5 w-full rounded-full text-sm sm:text-lg md:text-2xl font-bold active:border-2 active:border-black transition-all duration-200"
+            disabled={!paymentAllowed || isLoading}
+            className={`${
+              paymentAllowed
+                ? "bg-green-400 hover:bg-green-500 pointer-events-auto"
+                : "bg-gray-300 pointer-events-none"
+            } px-3 py-3 sm:py-4 md:py-5 w-full rounded-full text-sm sm:text-lg md:text-2xl font-bold active:border-2 active:border-black transition-all duration-200`}
             onClick={handlePaymentHandler}
           >
-            Pay
+            {isLoading ? "Processing..." : "Pay"}
           </button>
         </div>
       </div>

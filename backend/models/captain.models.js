@@ -72,7 +72,7 @@ const captainSchema = new Schema({
   rideEarnings: [
     {
       ride: {
-        type: Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "rides",
       },
       amount: {
@@ -93,7 +93,7 @@ const captainSchema = new Schema({
   ratings: [
     {
       ride: {
-        type: Schema.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "rides",
       },
       value: {

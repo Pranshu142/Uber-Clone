@@ -1,7 +1,6 @@
 import captainModel from "../models/captain.models.js";
 import createCaptain, {
   createBlackListTokens,
-  captainAcceptedRideDetailsUpdate,
 } from "../services/captain.service.js";
 import { validationResult } from "express-validator";
 
@@ -80,24 +79,4 @@ export const captainProfile = (req, res, next) => {
     .status(200)
     .json({ message: "captain logged in successfully", captain: req.captain });
   // console.log("🚀 ~ captainProfile ~ req.captain:", req.captain);
-};
-
-export const captainRideDetailsUpdation = async (res, req) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  const { rideId, captainId } = req.body;
-
-  try {
-    const captain = await captainAcceptedRideDetailsUpdate({
-      rideId,
-      captainId,
-    });
-    console.log(captain);
-    return res.status(200).json(captain);
-  } catch (error) {
-    console.error("Error starting ride:", error);
-    return res.status(500).json({ error: "Failed to start ride" });
-  }
 };

@@ -1,10 +1,11 @@
 import express from "express";
 const router = express.Router();
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import registerRider, {
   loginRider,
   logout,
   riderProfile,
+  captainRideDetailsUpdation,
 } from "../controller/rider.controller.js";
 import riderAuth from "../middlewares/auth.js";
 
@@ -38,5 +39,14 @@ router.post(
 router.post("/logout", riderAuth, logout);
 
 router.get("/profile", riderAuth, riderProfile);
+router.post(
+  "/captain-ride-details-updation",
+  riderAuth,
+  [
+    query("rideId").isMongoId().withMessage("provide a valid id"),
+    query("captainId").isMongoId().withMessage("provide a valid id"),
+  ],
+  captainRideDetailsUpdation
+);
 
 export default router;
