@@ -10,7 +10,7 @@ const RiderLogoutButton = () => {
   };
 
   return (
-    <div className="absolute top-10 right-10 z-[1002] bg-white rounded-full p-3 cursor-pointer">
+    <div className="absolute top-10 right-10 bg-white rounded-full p-3 cursor-pointer">
       <LogOut
         color="#000000"
         absoluteStrokeWidth

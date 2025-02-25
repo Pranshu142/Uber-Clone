@@ -252,7 +252,7 @@ const RiderHome = () => {
         src="https://brandeps.com/logo-download/U/Uber-logo-02.png"
         alt="Uber logo"
       />
-      <div ref={refs.logoutButton} className="absolute top-0 right-0">
+      <div ref={refs.logoutButton} className="absolute top-0 right-0 ">
         <RiderLogoutButton />
       </div>
       <LiveTracking />

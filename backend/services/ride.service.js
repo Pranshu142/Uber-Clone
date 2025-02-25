@@ -94,6 +94,16 @@ export const createRide = async ({
   }
 };
 
+export const findRide = async (rideid) => {
+  try {
+    const ride = await RideModel.findById(rideid).populate("captain");
+    return ride;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const confirmRide = async ({ rideId, captain }) => {
   if (!rideId) {
     throw new Error("rideId is required");
