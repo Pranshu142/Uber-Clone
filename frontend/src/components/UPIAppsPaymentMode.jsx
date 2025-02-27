@@ -8,14 +8,15 @@ const UPIAppsPaymentMode = ({
   isOpen,
   setIsLoading,
   upiAppName,
-  rideId,
+  ride,
   socket,
+  setPaymentStatus,
 }) => {
   const [upiLink, setUpiLink] = useState("");
   const [selectedAppUri, setSelectedAppUri] = useState("");
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [paymentInitiated, setPaymentInitiated] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,16 +25,15 @@ const UPIAppsPaymentMode = ({
 
   useEffect(() => {
     const generateUPILink = async () => {
-      if (!rideId || paymentInitiated) return;
+      if (!ride._id || paymentInitiated) return;
 
       try {
-        setIsLoading(true);
         setPaymentInitiated(true);
 
         const linkGenerated = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/payment/generate-upi-link`,
           {
-            params: { rideId },
+            params: { rideId: ride._id },
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
@@ -43,7 +43,6 @@ const UPIAppsPaymentMode = ({
         if (linkGenerated.status === 200) {
           const { upiURL } = linkGenerated.data;
           setUpiLink(upiURL);
-          socket.emit("payment-initiated", { rideId });
         }
       } catch (error) {
         console.error("Unable to generate UPI link:", error);
@@ -52,32 +51,7 @@ const UPIAppsPaymentMode = ({
     };
 
     generateUPILink();
-
-    return () => {
-      socket.off("payment-done");
-    };
-  }, [rideId, setIsLoading, navigate, socket]);
-
-  useEffect(() => {
-    const handlePaymentDone = (data) => {
-      const { status } = data;
-      if (status === "success") {
-        setPaymentStatus(true);
-        setIsLoading(false);
-        setPaymentInitiated(false);
-        isOpen(false);
-        navigate("/rider-home");
-      } else {
-        setPaymentStatus(false);
-      }
-    };
-
-    socket.on("payment-done", handlePaymentDone);
-
-    return () => {
-      socket.off("payment-done", handlePaymentDone);
-    };
-  }, [socket, navigate]);
+  }, [ride, setIsLoading, socket, paymentInitiated, upiLink]);
 
   const handlePayment = (appUri) => {
     setSelectedAppUri(appUri);
@@ -163,8 +137,9 @@ UPIAppsPaymentMode.propTypes = {
       name: PropTypes.string.isRequired,
     })
   ).isRequired,
-  rideId: PropTypes.string.isRequired,
+  ride: PropTypes.object.isRequired,
   socket: PropTypes.object.isRequired,
+  setPaymentStatus: PropTypes.func.isRequired,
 };
 
 export default UPIAppsPaymentMode;

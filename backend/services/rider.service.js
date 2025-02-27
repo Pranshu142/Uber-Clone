@@ -1,7 +1,5 @@
 import riderModel from "../models/rider.models.js";
 import blacklistedToken from "../models/blacklistedToken.models.js";
-import rideModel from "../models/ride.model.js";
-import captainModel from "../models/captain.models.js";
 
 const createRider = async ({ firstname, lastname, email, password }) => {
   if (!firstname || !lastname || !email || !password) {
@@ -37,46 +35,6 @@ export const createBlackListTokens = async ({ token }) => {
   } catch (err) {
     console.error("Error creating blacklist token:", err);
     res.status(500).json({ error: "Error creating blacklist token" });
-  }
-};
-export const captainAcceptedRideDetailsUpdate = async ({
-  rideId,
-  captainId,
-}) => {
-  try {
-    console.log("hello");
-    const ride = await rideModel.findById(rideId);
-    console.log(ride);
-    const captain = await captainModel.findById(captainId).populate({
-      path: "rideEarnings.ride",
-      select: "startLocation endLocation fare status",
-    });
-    if (!captain || !ride) {
-      throw new Error("Captain or ride not found");
-    }
-    if (ride.status !== "completed") {
-      throw new Error("Ride is not completed yet");
-    } else {
-      // Update captain's ride earnings
-      captain.rideEarnings.push({
-        ride: ride._id,
-        amount: ride.fare,
-      });
-
-      // Update total earnings
-      captain.totalEarnings += ride.fare;
-
-      // Increment total rides
-      captain.totalRides += 1;
-
-      // Save the changes
-      await captain.save();
-    }
-
-    console.log("Captain availability updated successfully.");
-    return captain;
-  } catch (error) {
-    console.error("Error updating captain availability:", error);
   }
 };
 

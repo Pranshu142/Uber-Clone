@@ -3,8 +3,7 @@ import createRider, {
   createBlackListTokens,
 } from "../services/rider.service.js";
 import { validationResult } from "express-validator";
-import { captainAcceptedRideDetailsUpdate } from "../services/rider.service.js";
-import Socket from "../socket.js";
+
 export default async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -82,25 +81,4 @@ export const logout = async (req, res, next) => {
   await createBlackListTokens({ token });
   res.clearCookie("token");
   res.status(200).json({ message: "rider logout successful" });
-};
-export const captainRideDetailsUpdation = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  const { rideId, captainId } = req.query;
-
-  try {
-    const captain = await captainAcceptedRideDetailsUpdate({
-      rideId,
-      captainId,
-    });
-    Socket.sendMessage(captain.socketId, "payment-done", captain);
-    console.log(captain);
-
-    return res.status(200).json(captain);
-  } catch (error) {
-    console.error("Error starting ride:", error);
-    return res.status(500).json({ error: "Failed to start ride" });
-  }
 };

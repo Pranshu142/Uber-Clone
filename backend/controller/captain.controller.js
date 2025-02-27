@@ -3,6 +3,8 @@ import createCaptain, {
   createBlackListTokens,
 } from "../services/captain.service.js";
 import { validationResult } from "express-validator";
+import { captainAcceptedRideDetailsUpdate } from "../services/captain.service.js";
+import Socket from "../socket.js";
 
 export default async (req, res) => {
   const errors = validationResult(req);
@@ -79,4 +81,25 @@ export const captainProfile = (req, res, next) => {
     .status(200)
     .json({ message: "captain logged in successfully", captain: req.captain });
   // console.log("🚀 ~ captainProfile ~ req.captain:", req.captain);
+};
+
+export const captainRideDetailsUpdation = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const { rideId, captainId } = req.query;
+
+  try {
+    const captain = await captainAcceptedRideDetailsUpdate({
+      rideId,
+      captainId,
+    });
+    console.log(captain);
+
+    return res.status(200).json(captain);
+  } catch (error) {
+    console.error("Error starting ride:", error);
+    return res.status(500).json({ error: "Failed to start ride" });
+  }
 };

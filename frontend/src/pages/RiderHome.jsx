@@ -117,15 +117,9 @@ const RiderHome = () => {
     });
 
     socket.on("ride-started", (data) => {
-      console.log(data);
       setRide(data);
       togglePanel("waitingCaptain", false);
       navigate("/riding", { state: { ride: data } });
-    });
-
-    socket.on("payment-done", (data) => {
-      console.log("please give the captains rating", data);
-      navigate("/rider-home");
     });
 
     return () => {
@@ -133,7 +127,7 @@ const RiderHome = () => {
       socket.off("ride-started");
       socket.off("join");
     };
-  }, [socket, rider]);
+  }, [rider]);
 
   useGSAP(() => {
     const config = panels.main ? animations.panelOpen : animations.panelClosed;

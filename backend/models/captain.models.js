@@ -71,7 +71,7 @@ const captainSchema = new Schema({
   },
   upiId: {
     type: String,
-    required: true,
+
     unique: true,
   },
   rideEarnings: [

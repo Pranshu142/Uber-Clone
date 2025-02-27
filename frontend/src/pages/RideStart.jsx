@@ -1,6 +1,7 @@
+import { ToastContainer, toast } from "react-toastify";
 import { MapPin, Coins } from "lucide-react";
 import Rings from "react-loading-icons/dist/esm/components/rings";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import RiderLogoutButton from "../components/RiderLogoutButton";
 import LiveTracking from "../components/LiveTracking.jsx";
 import { SocketContext } from "../context/SocketContext.jsx";
@@ -12,12 +13,12 @@ import { useGSAP } from "@gsap/react";
 const RideStart = () => {
   const location = useLocation();
   const ride = location.state.ride;
-  const navigate = useNavigate();
   const { socket } = useContext(SocketContext);
   const [upiPaymentMethodPannelOpen, setUpiPaymentMethodPannelOpen] =
     useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [paymentAllowed, setPaymentAllowed] = useState(true);
+  const [paymentAllowed, setPaymentAllowed] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(false);
   const upiPaymentMethodPannel = useRef(null);
   const upiAppName = [
     {
@@ -42,20 +43,45 @@ const RideStart = () => {
     if (ride && ride.status === "completed") {
       setPaymentAllowed(true);
     }
-  }, [ride]);
-
-  const handlePayButton = () => {
-    setUpiPaymentMethodPannelOpen(true);
-  };
+  }, [ride.status]);
 
   useEffect(() => {
-    socket.on("ride-completed", () => {
+    socket.on("ride-completed", (data) => {
+      console.log("Ride completed", data);
       setPaymentAllowed(true);
     });
     return () => {
       socket.off("ride-completed");
     };
-  }, [socket, navigate]);
+  }, []);
+  useEffect(() => {
+    console.log("listening for payment event", socket, ride.rider.socketId);
+    // const handlePaymentDone = (data) => {
+    //   console.log("Payment status:", data.status);
+    //   const { status } = data;
+    //   if (status === "success") {
+    //     setPaymentStatus(true);
+    //     setIsLoading(false);
+    //     setPaymentInitiated(false);
+    //     isOpen(false);
+    //     navigate("/rider-home");
+    //   } else {
+    //     setPaymentStatus(false);
+    //   }
+    // };
+
+    socket.on("payment-done", (data) => {
+      console.log("hurray", data.status);
+    });
+    return () => {
+      socket.off("payment-done");
+    };
+  }, []);
+
+  const handlePayButton = () => {
+    setUpiPaymentMethodPannelOpen(true);
+    setIsLoading(true);
+  };
 
   useGSAP(() => {
     if (upiPaymentMethodPannelOpen) {
@@ -77,6 +103,29 @@ const RideStart = () => {
       <RiderLogoutButton className="absolute top-0 right-0" />
 
       <LiveTracking />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      {paymentStatus &&
+        toast.success("Payment Done Successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        })}
 
       <div className="flex flex-col items-start gap-5 px-4 py-5 absolute bottom-0 h-[60vh] md:h-[50vh]  w-full bg-white shadow-lg shadow-gray-300 overflow-y-auto rounded-t-3xl">
         <div className="flex justify-between items-center w-full">
@@ -123,7 +172,7 @@ const RideStart = () => {
               paymentAllowed
                 ? "bg-green-400 hover:bg-green-500 pointer-events-auto"
                 : "bg-gray-300 pointer-events-none"
-            } px-3 py-3 sm:py-4 md:py-5 w-full rounded-full text-sm sm:text-lg md:text-2xl font-bold active:border-2 active:border-black transition-all duration-200`}
+            } px-3 py-3 sm:py-4 md:py-5 w-full rounded-full text-lg  md:text-2xl font-bold active:border-2 active:border-black transition-all duration-200`}
             onClick={handlePayButton}
           >
             {isLoading ? "Processing..." : "Pay"}
@@ -135,11 +184,12 @@ const RideStart = () => {
         className="fixed h-0 bottom-0  w-screen bg-white z-[100]"
       >
         <UPIAppsPaymentMode
-          isOpen={upiPaymentMethodPannelOpen}
+          isOpen={setUpiPaymentMethodPannelOpen}
           setIsLoading={setIsLoading}
           upiAppName={upiAppName}
-          rideId={ride._id}
+          ride={ride}
           socket={socket}
+          setPaymentStatus={setPaymentStatus}
         />
       </div>
     </div>

@@ -1,13 +1,14 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import CaptainLogoutButton from "../components/CaptainLogoutButton";
 import LiveTracking from "../components/LiveTracking";
 import { useLocation } from "react-router-dom";
-
+import QRCode from "react-qr-code";
 import { Coins, MapPin, MapPinOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { SocketContext } from "../context/SocketContext";
 
 /**
  * CaptainRidingStart Component
@@ -35,7 +36,21 @@ const CaptainRidingStart = () => {
   const location = useLocation();
   const ride = location.state.ride;
   const navigate = useNavigate();
+  const [qrCodePanelOpen, setQrCodePanelOpen] = useState(false);
+  const [qrCodeValue, setQrCodeValue] = useState("");
+  const qrCodeRef = useRef(null);
+
+  const { socket } = useContext(SocketContext);
+  // const [paymentDone, setPaymentDone] = useState(false);
   // Function to complete the ride
+  useEffect(() => {
+    socket.on("payment-initiated", (data) => {
+      const { upiURL } = data;
+      console.log(upiURL);
+      setQrCodeValue(upiURL);
+    });
+  }, []);
+
   const handleRideComplete = async () => {
     try {
       await axios
@@ -49,11 +64,66 @@ const CaptainRidingStart = () => {
         })
         .then((res) => {
           if (res.status === 200) {
-            navigate("/captain-home");
+            setQrCodePanelOpen(true);
+            setCompleteRidePanelOpen(false);
           }
         });
     } catch (error) {
       console.error("Error completing ride:", error);
+    }
+  };
+
+  const captianRideDetailInfoUpdate = async () => {
+    try {
+      await axios
+        .post(
+          `${
+            import.meta.env.VITE_BASE_URL
+          }/captains/captain-ride-details-updation`,
+          null,
+          {
+            params: {
+              rideId: ride._id,
+              captainId: ride.captain._id,
+            },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("captain-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("captain ride detail updated");
+          }
+        });
+    } catch (error) {
+      console.error("Error updating captain ride details:", error);
+    }
+  };
+
+  const updatePaymentStatus = async () => {
+    try {
+      await axios
+        .post(
+          `${import.meta.env.VITE_BASE_URL}/payment/payment-status-update`,
+          null,
+          {
+            params: {
+              rideId: ride._id,
+            },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("captain-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Payment status updated", res.message);
+            navigate("/captain-home");
+          }
+        });
+    } catch (error) {
+      console.error("Error updating payment status:", error);
     }
   };
   // GSAP animation for sliding the complete ride panel
@@ -74,6 +144,22 @@ const CaptainRidingStart = () => {
       });
     }
   }, [completeRidePanelOpen]);
+
+  useGSAP(() => {
+    if (qrCodePanelOpen) {
+      gsap.to(qrCodeRef.current, {
+        transform: "translateY(0)",
+        duration: 0.4,
+        ease: "power3.inOut",
+      });
+    } else {
+      gsap.to(qrCodeRef.current, {
+        transform: "translateY(100%)",
+        duration: 0.4,
+        ease: "power3.inOut",
+      });
+    }
+  }, [qrCodePanelOpen]);
 
   return (
     <div className="h-screen w-screen relative">
@@ -146,10 +232,33 @@ const CaptainRidingStart = () => {
 
         {/* Navigation button to complete ride */}
         <button
-          onClick={handleRideComplete}
+          onClick={() => {
+            handleRideComplete();
+          }}
           className="bg-green-300 w-full px-4 py-3 sm:px-5 sm:py-4 rounded-full text-center text-lg sm:text-xl font-semibold active:border-2 active:border-black transition-all duration-200"
         >
           Finish Ride
+        </button>
+      </div>
+
+      {/* QR Code Panel */}
+      <div
+        ref={qrCodeRef}
+        className="fixed w-full bottom-0 translate-y-full z-[1003] bg-white rounded-t-3xl shadow-lg flex flex-col gap-6 items-center px-3 py-4 sm:gap-10 sm:px-6 sm:py-5 border-2 border-gray-400"
+      >
+        <h2 className="text-3xl font-bold">Pay Here!</h2>
+        {/* Replace with your actual QR code */}
+        <QRCode value={qrCodeValue} size={256} level="H" />
+        <h3 className="text-lg font-bold">Scan to Pay</h3>
+        <button
+          onClick={() => {
+            setQrCodePanelOpen(false);
+            captianRideDetailInfoUpdate();
+            updatePaymentStatus();
+          }}
+          className="bg-blue-500 text-white px-4 py-2 rounded-full"
+        >
+          Done
         </button>
       </div>
     </div>
