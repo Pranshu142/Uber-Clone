@@ -70,6 +70,8 @@ export const paymentStatusUpdate = async (req, res) => {
     // await ride.save();
 
     // Emit socket event for real-time updates
+    // console.log(ride.rider);
+
     Socket.sendMessage(ride.rider.socketId, "payment-done", {
       status: "success",
       rideId: ride._id,

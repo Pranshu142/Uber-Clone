@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import LiveTracking from "../components/LiveTracking.jsx";
-
+import "react-toastify/dist/ReactToastify.css";
 // Import Animation libraries
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
@@ -119,7 +119,11 @@ const RiderHome = () => {
     socket.on("ride-started", (data) => {
       setRide(data);
       togglePanel("waitingCaptain", false);
-      navigate("/riding", { state: { ride: data } });
+      navigate("/riding", {
+        state: {
+          ride: data,
+        },
+      });
     });
 
     return () => {

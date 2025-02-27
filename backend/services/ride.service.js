@@ -96,7 +96,9 @@ export const createRide = async ({
 
 export const findRide = async (rideid) => {
   try {
-    const ride = await RideModel.findById(rideid).populate("captain");
+    const ride = await RideModel.findById(rideid)
+      .populate("captain")
+      .populate("rider");
     return ride;
   } catch (error) {
     console.error(error);

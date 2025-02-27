@@ -49,6 +49,10 @@ const CaptainRidingStart = () => {
       console.log(upiURL);
       setQrCodeValue(upiURL);
     });
+
+    return () => {
+      socket.off("payment-initiated");
+    };
   }, []);
 
   const handleRideComplete = async () => {
@@ -118,7 +122,7 @@ const CaptainRidingStart = () => {
         )
         .then((res) => {
           if (res.status === 200) {
-            console.log("Payment status updated", res.message);
+            console.log("Payment status updated", res.data.message);
             navigate("/captain-home");
           }
         });

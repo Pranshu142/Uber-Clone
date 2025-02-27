@@ -1,4 +1,3 @@
-import { ToastContainer, toast } from "react-toastify";
 import { MapPin, Coins } from "lucide-react";
 import Rings from "react-loading-icons/dist/esm/components/rings";
 import { useLocation } from "react-router-dom";
@@ -9,6 +8,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 import UPIAppsPaymentMode from "../components/UPIAppsPaymentMode.jsx";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ToastContainer, Bounce, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RideStart = () => {
   const location = useLocation();
@@ -54,29 +55,22 @@ const RideStart = () => {
       socket.off("ride-completed");
     };
   }, []);
-  useEffect(() => {
-    console.log("listening for payment event", socket, ride.rider.socketId);
-    // const handlePaymentDone = (data) => {
-    //   console.log("Payment status:", data.status);
-    //   const { status } = data;
-    //   if (status === "success") {
-    //     setPaymentStatus(true);
-    //     setIsLoading(false);
-    //     setPaymentInitiated(false);
-    //     isOpen(false);
-    //     navigate("/rider-home");
-    //   } else {
-    //     setPaymentStatus(false);
-    //   }
-    // };
 
-    socket.on("payment-done", (data) => {
-      console.log("hurray", data.status);
-    });
-    return () => {
-      socket.off("payment-done");
-    };
-  }, []);
+  useEffect(() => {
+    if (paymentStatus) {
+      toast.success("Payment done successfully", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+  }, [paymentStatus]);
 
   const handlePayButton = () => {
     setUpiPaymentMethodPannelOpen(true);
@@ -90,11 +84,30 @@ const RideStart = () => {
         duration: 0.5,
         ease: "power3.inOut",
       });
+    } else {
+      gsap.to(upiPaymentMethodPannel.current, {
+        height: "0vh",
+        duration: 0.5,
+        ease: "power3.inOut",
+      });
     }
   }, [upiPaymentMethodPannelOpen]);
 
   return (
     <div className="relative h-screen w-screen">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
       <img
         className="w-14 ml-5 sm:ml-12 mb-5 absolute top-5 sm:top-8 z-[10]"
         src="https://brandeps.com/logo-download/U/Uber-logo-02.png"
@@ -103,29 +116,6 @@ const RideStart = () => {
       <RiderLogoutButton className="absolute top-0 right-0" />
 
       <LiveTracking />
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      {paymentStatus &&
-        toast.success("Payment Done Successfully", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        })}
 
       <div className="flex flex-col items-start gap-5 px-4 py-5 absolute bottom-0 h-[60vh] md:h-[50vh]  w-full bg-white shadow-lg shadow-gray-300 overflow-y-auto rounded-t-3xl">
         <div className="flex justify-between items-center w-full">
