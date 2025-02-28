@@ -20,6 +20,7 @@ import LookingForCaptain from "../../components/Rider Components/LookingForCapta
 import RiderLogoutButton from "../../components/Rider Components/RiderLogoutButton.jsx";
 import { SocketContext } from "../../context/SocketContext.jsx";
 import { RiderDataContext } from "../../context/RiderContext.jsx";
+import { UserRound } from "lucide-react";
 
 /**
  * LocationMarker Component
@@ -57,6 +58,7 @@ const RiderHome = () => {
     panel: useRef(null),
     close: useRef(null),
     logoutButton: useRef(null),
+    profileButton: useRef(null),
     waitingCaptainPanel: useRef(null),
     vehicleTypePanel: useRef(null),
     confirmRidePanel: useRef(null),
@@ -73,8 +75,9 @@ const RiderHome = () => {
         ease: "power3.out",
         padding: "10px",
       },
-      close: { opacity: "1" },
-      logout: { opacity: "0", pointerEvents: "none" },
+      close: { opacity: "1", ease: "power3.out" },
+      logout: { opacity: "0", pointerEvents: "none", ease: "power3.out" },
+      profile: { opacity: "0", pointerEvents: " none", ease: "power3.out" },
     },
     panelClosed: {
       panel: {
@@ -83,8 +86,9 @@ const RiderHome = () => {
         duration: 0.3,
         ease: "power3.in",
       },
-      close: { opacity: "0" },
-      logout: { opacity: "1", pointerEvents: "auto" },
+      close: { opacity: "0", ease: "power3.in" },
+      profile: { opacity: "1", pointerEvents: "auto", ease: "power3.in" },
+      logout: { opacity: "1", pointerEvents: "auto", ease: "power3.in" },
     },
   };
   const togglePanel = (panelName, value) => {
@@ -138,6 +142,7 @@ const RiderHome = () => {
     gsap.to(refs.panel.current, config.panel);
     gsap.to(refs.close.current, config.close);
     gsap.to(refs.logoutButton.current, config.logout);
+    gsap.to(refs.profileButton.current, config.profile);
   }, [panels.main]);
   useGSAP(() => {
     const config = panels.vehicleType
@@ -245,18 +250,25 @@ const RiderHome = () => {
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
-      <img
-        className="w-16 md:w-14 ml-12 md:ml-14 mb-3 md:mb-5 absolute z-[900] top-5 md:top-4"
+      {/* <img
+        className="w-16 md:w-14 ml-12 md:ml-14 mb-3 md:mb-5 absolute top-10 md:top-4  z-10 "
         src="https://brandeps.com/logo-download/U/Uber-logo-02.png"
         alt="Uber logo"
-      />
-      <div ref={refs.logoutButton} className="absolute top-0 right-0 ">
+      /> */}
+      <div ref={refs.logoutButton} className="relative z-10  ">
         <RiderLogoutButton />
       </div>
+      <button
+        ref={refs.profileButton}
+        className="absolute top-32 right-2 z-10 p-3 bg-white rounded-full"
+        onClick={() => navigate("/rider-profile")}
+      >
+        <UserRound />
+      </button>
       <LiveTracking />
 
       {/* Booking Form */}
-      <div className="absolute justify-end flex flex-col h-screen top-0 w-screen z-[1001]">
+      <div className="absolute justify-end flex flex-col h-screen top-0 w-screen">
         <div className="h-[27%] p-2 md:p-4 bg-white relative w-full">
           <div className="flex justify-between items-center px-2 md:px-4">
             <h3 className="text-2xl md:text-4xl font-bold mb-3 md:mb-5">
