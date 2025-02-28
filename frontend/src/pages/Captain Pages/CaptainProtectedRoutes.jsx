@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { CaptainDataContext } from "../context/CaptainContext.jsx";
+import { CaptainDataContext } from "../../context/CaptainContext.jsx";
 
 /**
  * A protected route component for captain authentication.

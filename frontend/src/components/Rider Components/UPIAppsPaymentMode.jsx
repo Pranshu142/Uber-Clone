@@ -128,9 +128,9 @@ const UPIAppsPaymentMode = ({
           {upiAppName.map((app, index) => (
             <button
               key={index}
-              className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all"
+              className="flex w-full items-center justify-between p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all"
               onClick={() => handlePayment(app.uri)}
-              disabled={!upiLink || paymentInitiated}
+              disabled={!upiLink || !paymentInitiated}
             >
               <div className="flex items-center">
                 <img src={app.img} alt={app.name} className="w-12 h-12 mr-4" />

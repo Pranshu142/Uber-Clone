@@ -1,6 +1,6 @@
 import { Clock, Gauge, NotepadTextDashed } from "lucide-react";
 import { useContext } from "react";
-import { CaptainDataContext } from "../context/CaptainContext";
+import { CaptainDataContext } from "../../context/CaptainContext";
 
 /**
  * A component that displays detailed information about a captain/driver.

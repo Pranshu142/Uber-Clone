@@ -1,7 +1,7 @@
 // import React from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import { CaptainDataContext } from "../context/CaptainContext.jsx";
+import { CaptainDataContext } from "../../context/CaptainContext.jsx";
 import axios from "axios";
 
 /**

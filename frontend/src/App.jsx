@@ -1,20 +1,20 @@
 // import React from "react";
 import { Route, Routes } from "react-router-dom";
 import StartPage from "./pages/StartPage.jsx";
-import CaptainLogin from "./pages/CaptainLogin.jsx";
-import CaptainSignup from "./pages/CaptainSignup.jsx";
-import RiderLogin from "./pages/RiderLogin.jsx";
-import RiderSignup from "./pages/RiderSignup.jsx";
-import CaptainHome from "./pages/CaptainHome.jsx";
-import RiderHome from "./pages/RiderHome.jsx";
+import CaptainLogin from "./pages/Captain Pages/CaptainLogin.jsx";
+import CaptainSignup from "./pages/Captain Pages/CaptainSignup.jsx";
+import RiderLogin from "./pages/Rider Pages/RiderLogin.jsx";
+import RiderSignup from "./pages/Rider Pages/RiderSignup.jsx";
+import CaptainHome from "./pages/Captain Pages/CaptainHome.jsx";
+import RiderHome from "./pages/Rider Pages/RiderHome.jsx";
 // this import is used to protect the routes for the rider home page and the ride start page from unauthorized access
-import RiderProtectedRoutes from "./pages/RiderProtectedRoutes.jsx";
-import RiderLogout from "./pages/RiderLogout.jsx";
-import CaptainLogout from "./pages/CaptainLogout.jsx";
+import RiderProtectedRoutes from "./pages/Rider Pages/RiderProtectedRoutes.jsx";
+import RiderLogout from "./pages/Rider Pages/RiderLogout.jsx";
+import CaptainLogout from "./pages/Captain Pages/CaptainLogout.jsx";
 // this import is used to protect the routes for the captain home page and the ride start page from unauthorized access
-import CaptainProtectedRoutes from "./pages/CaptainProtectedRoutes.jsx";
-import RideStart from "./pages/RideStart.jsx";
-import CaptainRidingStart from "./pages/CaptainRidingStart.jsx";
+import CaptainProtectedRoutes from "./pages/Captain Pages/CaptainProtectedRoutes.jsx";
+import RideStart from "./pages/Rider Pages/RideStart.jsx";
+import CaptainRidingStart from "./pages/Captain Pages/CaptainRidingStart.jsx";
 
 const App = () => {
   return (

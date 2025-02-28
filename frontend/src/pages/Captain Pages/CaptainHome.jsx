@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import LiveTracking from "../components/LiveTracking.jsx";
-import CaptainLogoutButton from "../components/CaptainLogoutButton";
-import CaptainDetails from "../components/CaptainDetails";
-import RideAcceptPopUp from "../components/RideAcceptPopUp";
+import LiveTracking from "../../components/LiveTracking.jsx";
+import CaptainLogoutButton from "../../components/Captain Components/CaptainLogoutButton.jsx";
+import CaptainDetails from "../../components/Captain Components/CaptainDetails.jsx";
+import RideAcceptPopUp from "../../components/Captain Components/RideAcceptPopUp.jsx";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
-import CaptainConfirmRide from "../components/CaptainConfirmRide";
-import { SocketContext } from "../context/SocketContext.jsx";
-import { CaptainDataContext } from "../context/CaptainContext.jsx";
+import CaptainConfirmRide from "../../components/Captain Components/CaptainConfirmRide.jsx";
+import { SocketContext } from "../../context/SocketContext.jsx";
+import { CaptainDataContext } from "../../context/CaptainContext.jsx";
 import axios from "axios";
 
 /**

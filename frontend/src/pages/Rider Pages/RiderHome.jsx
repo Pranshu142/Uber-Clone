@@ -1,7 +1,7 @@
 // Import React and hooks
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import LiveTracking from "../components/LiveTracking.jsx";
+import LiveTracking from "../../components/LiveTracking.jsx";
 import "react-toastify/dist/ReactToastify.css";
 // Import Animation libraries
 import { useGSAP } from "@gsap/react";
@@ -12,14 +12,14 @@ import "remixicon/fonts/remixicon.css";
 import axios from "axios";
 
 // Import Components
-import LocationSearchPanel from "../components/LocationSearchPanel.jsx";
-import AvailableRidesType from "../components/AvailableRidesType.jsx";
-import ConfirmRidePanel from "../components/ConfirmRidePannel.jsx";
-import WaitingCaptainPannel from "../components/WaitingCaptainPannel.jsx";
-import LookingForCaptain from "../components/LookingForCaptain.jsx";
-import RiderLogoutButton from "../components/RiderLogoutButton.jsx";
-import { SocketContext } from "../context/SocketContext.jsx";
-import { RiderDataContext } from "../context/RiderContext.jsx";
+import LocationSearchPanel from "../../components/Rider Components/LocationSearchPanel.jsx";
+import AvailableRidesType from "../../components/Rider Components/AvailableRidesType.jsx";
+import ConfirmRidePanel from "../../components/Rider Components/ConfirmRidePannel.jsx";
+import WaitingCaptainPannel from "../../components/Rider Components/WaitingCaptainPannel.jsx";
+import LookingForCaptain from "../../components/Rider Components/LookingForCaptain.jsx";
+import RiderLogoutButton from "../../components/Rider Components/RiderLogoutButton.jsx";
+import { SocketContext } from "../../context/SocketContext.jsx";
+import { RiderDataContext } from "../../context/RiderContext.jsx";
 
 /**
  * LocationMarker Component

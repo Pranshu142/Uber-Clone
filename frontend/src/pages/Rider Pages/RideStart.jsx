@@ -1,11 +1,11 @@
 import { MapPin, Coins } from "lucide-react";
 import Rings from "react-loading-icons/dist/esm/components/rings";
 import { useLocation } from "react-router-dom";
-import RiderLogoutButton from "../components/RiderLogoutButton";
-import LiveTracking from "../components/LiveTracking.jsx";
-import { SocketContext } from "../context/SocketContext.jsx";
+import RiderLogoutButton from "../../components/Rider Components/RiderLogoutButton.jsx";
+import LiveTracking from "../../components/LiveTracking.jsx";
+import { SocketContext } from "../../context/SocketContext.jsx";
 import { useContext, useEffect, useRef, useState } from "react";
-import UPIAppsPaymentMode from "../components/UPIAppsPaymentMode.jsx";
+import UPIAppsPaymentMode from "../../components/Rider Components/UPIAppsPaymentMode.jsx";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ToastContainer, Bounce, toast } from "react-toastify";

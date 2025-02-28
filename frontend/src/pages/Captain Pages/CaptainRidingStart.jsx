@@ -1,14 +1,14 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useEffect, useRef, useState, useContext } from "react";
-import CaptainLogoutButton from "../components/CaptainLogoutButton";
-import LiveTracking from "../components/LiveTracking";
+import CaptainLogoutButton from "../../components/Captain Components/CaptainLogoutButton";
+import LiveTracking from "../../components/LiveTracking";
 import { useLocation } from "react-router-dom";
 import QRCode from "react-qr-code";
 import { Coins, MapPin, MapPinOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { SocketContext } from "../context/SocketContext";
+import { SocketContext } from "../../context/SocketContext";
 
 /**
  * CaptainRidingStart Component
