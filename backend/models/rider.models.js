@@ -20,7 +20,23 @@ const riderSchema = new Schema({
     unique: true,
     minlength: [5, "Email address must be at least 5 characters long"],
   },
-
+  phone: {
+    type: "String",
+    minlength: [10, "Phone number must be at least 10 characters long"],
+  },
+  gender: {
+    type: "String",
+    enum: ["male", "female"],
+    default: "male",
+  },
+  age: {
+    type: "String",
+    date: "Date",
+  },
+  totalRides: {
+    type: "Number",
+    default: 0,
+  },
   password: {
     type: "String",
     required: true,
@@ -51,7 +67,7 @@ riderSchema.methods.comparePassword = async function (password) {
 //   return await bcrypt.hash(password, salt);
 // };
 
-// // Pre Save Hook for Password Hashing
+//  Pre Save Hook for Password Hashing
 riderSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
