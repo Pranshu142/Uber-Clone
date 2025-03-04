@@ -18,6 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RiderProfilePageUpdateDetails from "../../components/Rider Components/RiderProfilePageUpdateDetails";
 
 const RiderProfile = () => {
   const [profile, setProfile] = useState(null);
@@ -113,7 +114,7 @@ const RiderProfile = () => {
   }
 
   return (
-    <div className="min-h-screen w-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen w-screen bg-gray-100  ">
       <ToastContainer position="top-center" />
       {/* Header */}
       <header className=" rounded-b-md shadow-md shadow-gray-400 text-white p-4">
@@ -143,7 +144,7 @@ const RiderProfile = () => {
       </header>
 
       {/* Profile content  */}
-      <div className="container px-3">
+      <div className="container px-3 w-full py-2 max-w-2xl ">
         <div className=" p-3 mt-10   shadow-md shadow-gray-500 rounded-t-md  border-1 border-gray-400 overflow-x-hidden flex-grow">
           {/** Section-1 constaining Pic and user name */}
           <section className="w-full flex flex-col md:flex-row items-center gap-4 md:gap-10 mb-6">
@@ -228,27 +229,30 @@ const RiderProfile = () => {
             </div>
           </section>
         </div>
-        <footer className="bg-gray-200  py-4 px-6 mt-20 s text-gray-800 rounded-t-xl shadow-md shadow-slate-600">
-          <div className="w-full  text-center">
-            <h2 className="text-base  font-semibold">Need Help?</h2>
-            <p className="text-sm text-gray-700 mt-1">
-              We&apos;re here for you 24/7. Reach out anytime!
-            </p>
+      </div>
+      <footer className="bg-gray-200  py-4 px-6 mt-20 s text-gray-800 rounded-t-xl shadow-md shadow-slate-600">
+        <div className="w-full  text-center">
+          <h2 className="text-base  font-semibold">Need Help?</h2>
+          <p className="text-sm text-gray-700 mt-1">
+            We&apos;re here for you 24/7. Reach out anytime!
+          </p>
 
-            <div className="mt-3 flex justify-center gap-3">
-              <button className="flex-1 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg">
-                Help Center
-              </button>
-              <button className="flex-1 py-2 bg-gray-500 text-white text-sm font-medium rounded-lg">
-                Terms & Privacy
-              </button>
-            </div>
-
-            <p className="text-xs text-gray-500 mt-4">
-              © 2025 Uber Clone. All rights reserved.
-            </p>
+          <div className="mt-3 flex justify-center gap-3">
+            <button className="flex-1 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg">
+              Help Center
+            </button>
+            <button className="flex-1 py-2 bg-gray-500 text-white text-sm font-medium rounded-lg">
+              Terms & Privacy
+            </button>
           </div>
-        </footer>
+
+          <p className="text-xs text-gray-500 mt-4">
+            © 2025 Uber Clone. All rights reserved.
+          </p>
+        </div>
+      </footer>
+      <div className="editing-pannel fixed  min-h-screen w-screen bg-gray-200 bottom-0 ">
+        <RiderProfilePageUpdateDetails formData={formData} />
       </div>
     </div>
   );
