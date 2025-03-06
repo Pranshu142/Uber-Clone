@@ -5,46 +5,46 @@ import jwt from "jsonwebtoken";
 const riderSchema = new Schema({
   fullname: {
     firstname: {
-      type: "String",
+      type: String,
       required: true,
       minlength: [3, "First name must be at least 3 characters long"],
     },
     lastname: {
-      type: "String",
+      type: String,
     },
   },
 
   email: {
-    type: "String",
+    type: String,
     required: true,
     unique: true,
     minlength: [5, "Email address must be at least 5 characters long"],
   },
   phone: {
-    type: "String",
+    type: String,
     minlength: [10, "Phone number must be at least 10 characters long"],
   },
   gender: {
-    type: "String",
+    type: String,
     enum: ["male", "female", "other"],
     default: "male",
   },
   dob: {
-    type: "String",
+    type: String,
     date: "Date",
   },
   totalRides: {
-    type: "Number",
+    type: Number,
     default: 0,
   },
   password: {
-    type: "String",
+    type: String,
     required: true,
     select: false,
   },
 
   socketId: {
-    type: "String",
+    type: String,
   },
 });
 

@@ -48,6 +48,7 @@ export const loginRider = async (req, res, next) => {
   const { email, password } = req.body;
   const rider = await riderModel.findOne({ email: email }).select("+password");
 
+  console.log("🚀 ~ loginRider ~ rider:", rider);
   if (!rider) {
     return res.status(401).json({ errors: "Invalid email or password" });
   }
@@ -91,7 +92,7 @@ export const profileUpdateController = async (req, res) => {
   }
 
   const profileData = req.body;
-  // console.log("🚀 ~ profileUpdateController ~ profileData:", profileData);
+  console.log("🚀 ~ profileUpdateController ~ profileData:", profileData);
   const riderId = req.rider._id;
   // console.log("🚀 ~ profileUpdateController ~ riderId:", riderId);
 

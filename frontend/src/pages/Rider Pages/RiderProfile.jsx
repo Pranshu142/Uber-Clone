@@ -21,13 +21,34 @@ import gsap from "gsap";
 const RiderProfile = () => {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const { updateRider, rider } = useContext(RiderDataContext);
+  const { setRider, rider } = useContext(RiderDataContext);
+  const [formData, setFormData] = useState({
+    fullname: {
+      firstname: rider?.fullname?.firstname || "",
+      lastname: rider?.fullname?.lastname || "",
+    },
+    email: rider?.email || "",
+    phone: rider?.phone || "",
+    gender: rider?.gender || "male",
+    dob: rider?.dob || "",
+  });
 
   const updationPannel = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (rider) {
+      // Update form data when rider data is available
+      setFormData({
+        fullname: {
+          firstname: rider.fullname?.firstname || "",
+          lastname: rider.fullname?.lastname || "",
+        },
+        email: rider.email || "",
+        phone: rider.phone || "",
+        gender: rider.gender || "male",
+        dob: rider.dob || "",
+      });
       setLoading(false);
     }
   }, [rider]);
@@ -52,23 +73,20 @@ const RiderProfile = () => {
     }
   }, [isEditing]);
 
-  const handleProfileUpdate = async (updatedData) => {
+  const handleProfileUpdate = async (formData) => {
     setLoading(true);
     try {
       const response = await axios.put(
         `${import.meta.env.VITE_BASE_URL}/riders/profile/update`,
         {
           fullname: {
-            firstname: updatedData.firstname,
-            lastname: updatedData.lastname,
+            firstname: formData.fullname.firstname,
+            lastname: formData.fullname.lastname,
           },
-          email: updatedData.email,
-          phone: updatedData.phone,
-          gender: updatedData.gender,
-          age: updatedData.dob,
-          ...(updatedData.newPassword && {
-            password: updatedData.newPassword,
-          }),
+          email: formData.email,
+          phone: formData.phone,
+          gender: formData.gender,
+          age: formData.dob,
         },
         {
           headers: {
@@ -78,7 +96,7 @@ const RiderProfile = () => {
       );
 
       if (response.data.success) {
-        updateRider(response.data.rider);
+        setRider(response.data.rider);
         setIsEditing(false);
         toast.success("Profile updated successfully!");
       }
@@ -260,8 +278,8 @@ const RiderProfile = () => {
         className="fixed h-0 bottom-0 w-screen bg-gray-200 "
       >
         <RiderProfilePageUpdateDetails
-          initialData={rider}
-          onUpdate={updateRider}
+          formData={formData}
+          setFormData={setFormData}
           onSubmit={handleProfileUpdate}
           onClose={() => setIsEditing(false)}
         />

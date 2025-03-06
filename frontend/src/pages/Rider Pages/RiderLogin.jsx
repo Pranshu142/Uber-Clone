@@ -26,6 +26,7 @@ const UserLogin = () => {
       );
       if (response.status === 200) {
         const data = response.data;
+
         setRider(data.rider);
         localStorage.setItem("token", data.token);
         navigate("/rider-home");

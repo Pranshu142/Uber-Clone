@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 
 const RiderProfilePageUpdateDetails = ({
-  initialData,
-  onUpdate,
+  formData,
+  setFormData,
   onSubmit,
   onClose,
 }) => {
@@ -12,7 +12,7 @@ const RiderProfilePageUpdateDetails = ({
   const [confirmPassword, setConfirmPassword] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(initialData);
+    onSubmit(formData);
   };
 
   const handleIsEditing = function () {
@@ -38,17 +38,21 @@ const RiderProfilePageUpdateDetails = ({
           <legend className="text-md font-bold bg-white px-5 border-2  py-2 rounded-2xl tracking-wider">
             General Info
           </legend>
+
           <label htmlFor="changeFirstName" className="text-lg font-semibold">
             First Name
           </label>
           <input
             type="text"
-            value={initialData.fullname.firstname}
+            value={formData.fullname.firstname}
             onChange={(e) =>
-              onUpdate({
-                ...initialData,
-                fullname: { firstname: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                fullname: {
+                  ...prev.fullname,
+                  firstname: e.target.value,
+                },
+              }))
             }
             name="changeFirstName"
             className="px-3 py-2 bg-gray-300 rounded-2xl focus:ring-2 focus:ring-gray-500  text-sm  tracking-wider"
@@ -58,12 +62,15 @@ const RiderProfilePageUpdateDetails = ({
           </label>
           <input
             type="text"
-            value={initialData.fullname.lastname}
+            value={formData.fullname.lastname}
             onChange={(e) =>
-              onUpdate({
-                ...initialData,
-                fullname: { lastname: e.target.value },
-              })
+              setFormData((prev) => ({
+                ...prev,
+                fullname: {
+                  ...prev.fullname,
+                  lastname: e.target.value,
+                },
+              }))
             }
             name="changeLastName"
             className="px-3 py-2 bg-gray-300 rounded-2xl focus:ring-2 focus:ring-gray-500  text-sm tracking-wider"
@@ -73,10 +80,13 @@ const RiderProfilePageUpdateDetails = ({
           </label>
           <select
             name="gender"
+            value={formData.gender || "male"}
             onChange={(e) =>
-              onUpdate({ ...initialData, gender: e.target.value })
+              setFormData((prev) => ({
+                ...prev,
+                gender: e.target.value,
+              }))
             }
-            value={initialData.gender || "male"}
             className="px-3 py-2 bg-gray-300 rounded-2xl focus:ring-2 focus:ring-gray-500  text-sm tracking-wider"
           >
             <option value="male">Male</option>
@@ -88,8 +98,13 @@ const RiderProfilePageUpdateDetails = ({
           </label>
           <input
             type="date"
-            onChange={(e) => onUpdate({ ...initialData, dob: e.target.value })}
-            value={initialData.dob}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                dob: e.target.value,
+              }))
+            }
+            value={formData.dob}
             name="changeDOB"
             className="px-3 py-2 bg-gray-300 rounded-2xl focus:ring-2 focus:ring-gray-500 mb-2 text-sm  tracking-wider"
           ></input>
@@ -103,10 +118,13 @@ const RiderProfilePageUpdateDetails = ({
           </label>
           <input
             type="email"
+            value={formData.email}
             onChange={(e) =>
-              onUpdate({ ...initialData, email: e.target.value })
+              setFormData((prev) => ({
+                ...prev,
+                email: e.target.value,
+              }))
             }
-            value={initialData.email}
             name="changeEmail"
             className="px-3 py-2 bg-gray-300 rounded-2xl focus:ring-2 focus:ring-gray-500 text-sm"
           ></input>
@@ -116,9 +134,12 @@ const RiderProfilePageUpdateDetails = ({
           <input
             type="number"
             onChange={(e) =>
-              onUpdate({ ...initialData, phone: e.target.value })
+              setFormData((prev) => ({
+                ...prev,
+                phone: e.target.value,
+              }))
             }
-            value={initialData.phone}
+            value={formData.phone}
             name="changeMobileNumber"
             className="px-3 py-2 bg-gray-300 rounded-2xl focus:ring-2 focus:ring-gray-500 text-sm tracking-wider"
           ></input>
@@ -162,8 +183,8 @@ const RiderProfilePageUpdateDetails = ({
 };
 
 RiderProfilePageUpdateDetails.propTypes = {
-  initialData: PropTypes.object.isRequired,
-  onUpdate: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  setFormData: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };

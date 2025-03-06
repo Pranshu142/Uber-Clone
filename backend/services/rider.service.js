@@ -46,7 +46,18 @@ export const updateProfileDetails = async ({ profileData, riderId }) => {
   try {
     const rider = await riderModel.findByIdAndUpdate(
       riderId,
-      { ...profileData },
+      {
+        $set: {
+          fullname: {
+            firstname: profileData.fullname.firstname,
+            lastname: profileData.fullname.lastname,
+          },
+          email: profileData.email,
+          phone: profileData.phone,
+          gender: profileData.gender,
+          dob: profileData.age,
+        },
+      },
       { new: true }
     );
     return rider;
