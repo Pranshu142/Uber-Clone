@@ -1,6 +1,7 @@
 import riderModel from "../models/rider.models.js";
 import createRider, {
   createBlackListTokens,
+  updateProfileDetails,
 } from "../services/rider.service.js";
 import { validationResult } from "express-validator";
 
@@ -81,4 +82,30 @@ export const logout = async (req, res, next) => {
   await createBlackListTokens({ token });
   res.clearCookie("token");
   res.status(200).json({ message: "rider logout successful" });
+};
+
+export const profileUpdateController = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const profileData = req.body;
+  // console.log("🚀 ~ profileUpdateController ~ profileData:", profileData);
+  const riderId = req.rider._id;
+  // console.log("🚀 ~ profileUpdateController ~ riderId:", riderId);
+
+  try {
+    const rider = await updateProfileDetails({ profileData, riderId });
+    if (rider) {
+      res.status(200).json({ success: true, rider });
+    } else {
+      res.status(404).json({ success: false, message: "Rider not found" });
+    }
+  } catch (err) {
+    console.error("Error updating profile", err.message);
+    return res
+      .status(500)
+      .json({ success: false, message: "Error updating profile" });
+  }
 };

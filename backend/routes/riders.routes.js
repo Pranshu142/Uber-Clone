@@ -1,9 +1,10 @@
 import express from "express";
 const router = express.Router();
-import { body, query } from "express-validator";
+import { body } from "express-validator";
 import registerRider, {
   loginRider,
   logout,
+  profileUpdateController,
   riderProfile,
 } from "../controller/rider.controller.js";
 import riderAuth from "../middlewares/auth.js";
@@ -37,4 +38,28 @@ router.post(
 
 router.post("/logout", riderAuth, logout);
 router.get("/profile", riderAuth, riderProfile);
+router.put(
+  "/profile/update",
+  riderAuth,
+  [
+    body("fullname.firstname")
+      .isString()
+      .trim()
+      .optional()
+      .withMessage("First name must be a string"),
+    body("fullname.lastname")
+      .isString()
+      .trim()
+      .optional()
+      .withMessage("Last name must be a string"),
+    body("email").isEmail().withMessage("Email must be in correct syntax"),
+    body("phone")
+      .optional()
+      .matches(/^\+?[1-9]\d{1,14}$/)
+      .withMessage("Phone must be a valid number"),
+
+    body("age").optional().isDate(),
+  ],
+  profileUpdateController
+);
 export default router;

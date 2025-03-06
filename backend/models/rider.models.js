@@ -26,10 +26,10 @@ const riderSchema = new Schema({
   },
   gender: {
     type: "String",
-    enum: ["male", "female"],
+    enum: ["male", "female", "other"],
     default: "male",
   },
-  age: {
+  dob: {
     type: "String",
     date: "Date",
   },

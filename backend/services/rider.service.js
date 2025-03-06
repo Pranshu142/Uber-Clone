@@ -38,4 +38,22 @@ export const createBlackListTokens = async ({ token }) => {
   }
 };
 
+export const updateProfileDetails = async ({ profileData, riderId }) => {
+  if (!profileData || !riderId) {
+    throw new Error("new profile data and rider id is required");
+  }
+
+  try {
+    const rider = await riderModel.findByIdAndUpdate(
+      riderId,
+      { ...profileData },
+      { new: true }
+    );
+    return rider;
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ error: "Error updating profile data" });
+  }
+};
+
 export default createRider;

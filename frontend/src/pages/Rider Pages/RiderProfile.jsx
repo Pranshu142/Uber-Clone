@@ -1,16 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import axios from "axios";
 import {
-  User,
-  Mail,
-  Phone,
   ChevronLeft,
-  Save,
   X,
   User2Icon,
   MailIcon,
   PhoneIcon,
-  User2,
   TimerIcon,
   Bike,
   UserRound,
@@ -19,74 +14,61 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RiderProfilePageUpdateDetails from "../../components/Rider Components/RiderProfilePageUpdateDetails";
+import { RiderDataContext } from "../../context/RiderContext";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 const RiderProfile = () => {
-  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    phone: "",
-    gender: "",
-  });
+  const { updateRider, rider } = useContext(RiderDataContext);
+
+  const updationPannel = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/riders/profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setProfile(response.data.rider);
-        setFormData({
-          firstname: response.data.rider.fullname.firstname,
-          lastname: response.data.rider.fullname.lastname,
-          email: response.data.rider.email,
-          phone: response.data.rider.phone || "",
-          gender: response.data.rider.gender || "",
-          age: response.data.rider.age || "",
-          totalRides: response.data.rider.totalRides || 0,
-        });
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-        toast.error("Failed to load profile");
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (rider) {
+      setLoading(false);
+    }
+  }, [rider]);
 
-    fetchProfile();
-  }, []);
+  useGSAP(() => {
+    if (isEditing) {
+      gsap.to(updationPannel.current, {
+        height: "100vh",
+        y: 0,
+        duration: 0.6,
+        ease: "back.out(1.2)",
+        opacity: 1,
+      });
+    } else {
+      gsap.to(updationPannel.current, {
+        height: "0",
+        y: 100,
+        duration: 0.5,
+        ease: "power3.inOut",
+        opacity: 0,
+      });
+    }
+  }, [isEditing]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleProfileUpdate = async (updatedData) => {
     setLoading(true);
     try {
       const response = await axios.put(
         `${import.meta.env.VITE_BASE_URL}/riders/profile/update`,
         {
           fullname: {
-            firstname: formData.firstname,
-            lastname: formData.lastname,
+            firstname: updatedData.firstname,
+            lastname: updatedData.lastname,
           },
-          email: formData.email,
-          phone: formData.phone,
-          gender: formData.gender,
+          email: updatedData.email,
+          phone: updatedData.phone,
+          gender: updatedData.gender,
+          age: updatedData.dob,
+          ...(updatedData.newPassword && {
+            password: updatedData.newPassword,
+          }),
         },
         {
           headers: {
@@ -94,12 +76,15 @@ const RiderProfile = () => {
           },
         }
       );
-      setProfile(response.data.rider);
-      setIsEditing(false);
-      toast.success("Profile updated successfully!");
+
+      if (response.data.success) {
+        updateRider(response.data.rider);
+        setIsEditing(false);
+        toast.success("Profile updated successfully!");
+      }
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast.error("Failed to update profile");
+      toast.error(error.response?.data?.message || "Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -113,11 +98,27 @@ const RiderProfile = () => {
     );
   }
 
+  const calculateAge = (dob) => {
+    if (!dob) return null;
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
+
   return (
-    <div className="min-h-screen w-screen bg-gray-100  ">
+    <div className="min-h-screen w-screen bg-gray-100">
       <ToastContainer position="top-center" />
       {/* Header */}
-      <header className=" rounded-b-md shadow-md shadow-gray-400 text-white p-4">
+      <header className="rounded-b-md shadow-md shadow-gray-400 text-white p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
@@ -162,7 +163,9 @@ const RiderProfile = () => {
             {/* Name */}
             <div className="text-center md:text-left">
               <h1 className="text-lg font-bold tracking-wide">
-                <span>{formData.firstname + " " + formData.lastname}</span>
+                <span>
+                  {rider?.fullname?.firstname + " " + rider?.fullname?.lastname}
+                </span>
               </h1>
             </div>
           </section>
@@ -175,17 +178,17 @@ const RiderProfile = () => {
             {
               icon: <MailIcon size={24} />,
               label: "Email",
-              value: formData.email,
+              value: rider.email,
             },
             {
               icon: <PhoneIcon size={24} />,
               label: "Phone",
-              value: formData.phone || "+91 9305709783",
+              value: rider.phone || "+91 9305709783",
             },
             {
               icon: <User2Icon size={24} />,
               label: "Gender",
-              value: formData.gender || "Male",
+              value: rider.gender || "Male",
             },
           ].map((item, index) => (
             <section
@@ -212,7 +215,7 @@ const RiderProfile = () => {
             <div className="subsection-1 flex flex-col justify-center items-center  ">
               <UserRound color="#5600f5" />
               <h1>
-                <span>{formData.age == "" ? "21" : formData.age}</span>
+                <span>{calculateAge(rider.dob) || "N/A"}</span>
               </h1>
             </div>
             <div className="subsection-2 flex flex-col justify-center items-center  ">
@@ -224,7 +227,7 @@ const RiderProfile = () => {
             <div className="subsection-3 flex flex-col justify-center items-center  ">
               <Bike color="red" />
               <h1>
-                <span>{formData.totalRides}</span>
+                <span>{rider.totalRides}</span>
               </h1>
             </div>
           </section>
@@ -251,8 +254,17 @@ const RiderProfile = () => {
           </p>
         </div>
       </footer>
-      <div className="editing-pannel fixed  min-h-screen w-screen bg-gray-200 bottom-0 ">
-        <RiderProfilePageUpdateDetails formData={formData} />
+
+      <div
+        ref={updationPannel}
+        className="fixed h-0 bottom-0 w-screen bg-gray-200 "
+      >
+        <RiderProfilePageUpdateDetails
+          initialData={rider}
+          onUpdate={updateRider}
+          onSubmit={handleProfileUpdate}
+          onClose={() => setIsEditing(false)}
+        />
       </div>
     </div>
   );
