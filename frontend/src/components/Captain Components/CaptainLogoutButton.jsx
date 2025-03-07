@@ -23,12 +23,12 @@ const CaptainLogoutButton = () => {
   };
 
   return (
-    <div className="absolute top-6 right-6 z-[1002] flex gap-4">
+    <div className="absolute top-10 right-6 z-[1002] flex gap-4">
       {/* Logout Button */}
       <button
         onClick={logoutHandler}
         aria-label="Logout"
-        className="bg-white hover:bg-gray-200 p-3 rounded-full shadow-md transition-all duration-200 ease-in-out"
+        className="bg-white hover:bg-gray-200 p-3 rounded-full shadow-md"
       >
         <LogOut className="text-black h-6 w-6" />
       </button>

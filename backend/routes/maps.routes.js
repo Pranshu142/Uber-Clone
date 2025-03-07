@@ -26,7 +26,7 @@ route.get(
 
 route.get(
   "/get-suggestions",
-  [query("input").isString().isLength({ min: 3 })],
+  query("input").isString().isLength({ min: 3 }),
   riderAuth,
   getSuggestionsFunc
 );

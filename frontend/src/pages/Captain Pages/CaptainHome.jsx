@@ -9,6 +9,8 @@ import CaptainConfirmRide from "../../components/Captain Components/CaptainConfi
 import { SocketContext } from "../../context/SocketContext.jsx";
 import { CaptainDataContext } from "../../context/CaptainContext.jsx";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { UserRound } from "lucide-react";
 
 /**
  * CaptainHome component - Main interface for ride-share captains/drivers
@@ -53,10 +55,11 @@ const CaptainHome = () => {
     useState(false);
   const [ridePopUpPanelOpen, setRidePopUpPanelOpen] = useState(false);
   const [ride, setRide] = useState(null);
-
+  const navigate = useNavigate();
   // Context hooks
   const { socket } = useContext(SocketContext);
   const { captain } = useContext(CaptainDataContext);
+  const profileButton = useRef(null);
 
   useEffect(() => {
     // Join socket room as captain
@@ -156,8 +159,14 @@ const CaptainHome = () => {
   return (
     <div className="h-screen w-screen relative overflow-hidden">
       {/* Logout Button Component */}
-      <CaptainLogoutButton className="absolute top-4 right-4 z-[1001]" />
-
+      <CaptainLogoutButton className="absolute top-12 right-4 z-[1001]" />
+      <button
+        ref={profileButton}
+        onClick={() => navigate("/captain-profile")}
+        className="absolute top-26 right-6 z-10 p-3 bg-white rounded-full shadow-md shadow-gray-400"
+      >
+        <UserRound />
+      </button>
       {/* Live Map Tracking Component */}
       <LiveTracking />
 

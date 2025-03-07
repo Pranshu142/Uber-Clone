@@ -19,8 +19,6 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
 const RiderProfile = () => {
-  const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
   const { setRider, rider } = useContext(RiderDataContext);
   const [formData, setFormData] = useState({
     fullname: {
@@ -32,6 +30,10 @@ const RiderProfile = () => {
     gender: rider?.gender || "male",
     dob: rider?.dob || "",
   });
+  const [dob, setDOB] = useState(null);
+  const [age, setAge] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   const updationPannel = useRef(null);
   const navigate = useNavigate();
@@ -49,9 +51,30 @@ const RiderProfile = () => {
         gender: rider.gender || "male",
         dob: rider.dob || "",
       });
+      setDOB(rider.dob);
       setLoading(false);
     }
   }, [rider]);
+
+  useEffect(() => {
+    console.log(dob);
+    const calculateAge = (dob) => {
+      if (!dob) return null;
+      const birthDate = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+      ) {
+        age--;
+      }
+      setAge(age);
+    };
+    calculateAge(dob);
+  }, [dob]);
 
   useGSAP(() => {
     if (isEditing) {
@@ -115,22 +138,6 @@ const RiderProfile = () => {
       </div>
     );
   }
-
-  const calculateAge = (dob) => {
-    if (!dob) return null;
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
-    }
-    return age;
-  };
 
   return (
     <div className="min-h-screen w-screen bg-gray-100">
@@ -233,7 +240,7 @@ const RiderProfile = () => {
             <div className="subsection-1 flex flex-col justify-center items-center  ">
               <UserRound color="#5600f5" />
               <h1>
-                <span>{calculateAge(rider.dob) || "N/A"}</span>
+                <span>{age || "N/A"}</span>
               </h1>
             </div>
             <div className="subsection-2 flex flex-col justify-center items-center  ">

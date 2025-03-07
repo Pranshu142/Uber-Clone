@@ -30,8 +30,7 @@ const riderSchema = new Schema({
     default: "male",
   },
   dob: {
-    type: String,
-    date: "Date",
+    type: Date,
   },
   totalRides: {
     type: Number,

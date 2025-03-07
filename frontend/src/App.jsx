@@ -16,6 +16,7 @@ import CaptainProtectedRoutes from "./pages/Captain Pages/CaptainProtectedRoutes
 import RideStart from "./pages/Rider Pages/RideStart.jsx";
 import CaptainRidingStart from "./pages/Captain Pages/CaptainRidingStart.jsx";
 import RiderProfile from "./pages/Rider Pages/RiderProfile.jsx";
+import CaptainProfile from "./pages/Captain Pages/CaptainProfile.jsx";
 
 const App = () => {
   return (
@@ -60,6 +61,14 @@ const App = () => {
             <CaptainProtectedRoutes>
               <CaptainHome />
             </CaptainProtectedRoutes>
+          }
+        />
+        <Route
+          path="/captain-profile"
+          element={
+            <RiderProtectedRoutes>
+              <CaptainProfile />
+            </RiderProtectedRoutes>
           }
         />
         <Route path="/captain-riding" element={<CaptainRidingStart />} />

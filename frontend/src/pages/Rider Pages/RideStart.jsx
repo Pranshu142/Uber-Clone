@@ -72,11 +72,6 @@ const RideStart = () => {
     }
   }, [paymentStatus]);
 
-  const handlePayButton = () => {
-    setUpiPaymentMethodPannelOpen(true);
-    setIsLoading(true);
-  };
-
   useGSAP(() => {
     if (upiPaymentMethodPannelOpen) {
       gsap.to(upiPaymentMethodPannel.current, {
@@ -92,6 +87,11 @@ const RideStart = () => {
       });
     }
   }, [upiPaymentMethodPannelOpen]);
+
+  const handlePayButton = () => {
+    setUpiPaymentMethodPannelOpen(true);
+    setIsLoading(true);
+  };
 
   return (
     <div className="relative h-screen w-screen">
@@ -176,6 +176,7 @@ const RideStart = () => {
         <UPIAppsPaymentMode
           isOpen={setUpiPaymentMethodPannelOpen}
           setIsLoading={setIsLoading}
+          isLoading={isLoading}
           upiAppName={upiAppName}
           ride={ride}
           socket={socket}

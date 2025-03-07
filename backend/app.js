@@ -42,7 +42,7 @@ app.use("/riders", ridersRouter);
 app.use("/captains", captainsRouter);
 app.use("/maps", mapRouter);
 app.use("/ride", rideRouter);
-app.use("/payments", paymentRouter);
+app.use("/payment", paymentRouter);
 app.use((_req, _res, next) => {
   next(createError(404));
 });

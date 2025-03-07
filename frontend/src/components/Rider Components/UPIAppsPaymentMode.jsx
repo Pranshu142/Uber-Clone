@@ -7,13 +7,13 @@ import QRCode from "react-qr-code";
 const UPIAppsPaymentMode = ({
   isOpen,
   setIsLoading,
+  isLoading,
   upiAppName,
   ride,
   socket,
   setPaymentStatus,
 }) => {
   const [upiLink, setUpiLink] = useState("");
-  const [selectedAppUri, setSelectedAppUri] = useState("");
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [paymentInitiated, setPaymentInitiated] = useState(false);
   const [error, setError] = useState(null);
@@ -41,6 +41,7 @@ const UPIAppsPaymentMode = ({
 
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/payment/generate-upi-link`,
+
         {
           params: { rideId: ride._id },
           headers: {
@@ -101,8 +102,6 @@ const UPIAppsPaymentMode = ({
   // Handle payment initiation
   const handlePayment = useCallback(
     (appUri) => {
-      setSelectedAppUri(appUri);
-
       if (!isMobileDevice || !upiLink) {
         setError("Payment method not available");
         return;
@@ -156,7 +155,13 @@ const UPIAppsPaymentMode = ({
         </div>
       );
     }
-
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center h-screen bg-gray-100">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
+      );
+    }
     return (
       <div className="flex flex-col items-center">
         {upiLink && (
@@ -200,6 +205,7 @@ const UPIAppsPaymentMode = ({
 UPIAppsPaymentMode.propTypes = {
   isOpen: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]).isRequired,
   setIsLoading: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
   upiAppName: PropTypes.arrayOf(
     PropTypes.shape({
       uri: PropTypes.string.isRequired,
