@@ -1,4 +1,11 @@
 import { useEffect, useState, useContext, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { CaptainDataContext } from "../../context/CaptainContext";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import CaptainProfileUpdatePannel from "../../components/Captain Components/CaptainProfileUpdatePannel";
 import {
   ChevronLeft,
   X,
@@ -8,13 +15,6 @@ import {
   Wallet,
   Star,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { CaptainDataContext } from "../../context/CaptainContext";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import CaptainProfileUpdatePannel from "../../components/Captain Components/CaptainProfileUpdatePannel";
 
 const CaptainProfile = () => {
   const { captain } = useContext(CaptainDataContext);
