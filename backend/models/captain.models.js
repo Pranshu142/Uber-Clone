@@ -29,6 +29,11 @@ const captainSchema = new Schema({
     select: false,
   },
 
+  DOB: {
+    type: Date,
+    default: new Date(),
+  },
+
   socketId: {
     type: String,
   },

@@ -1,12 +1,13 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 import PropTypes from "prop-types";
-import { CaptainDataContext } from "../../context/CaptainContext";
+
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const CaptainProfileUpdatePannel = ({ captain, onClose }) => {
-  const { updateCaptain } = useContext(CaptainDataContext);
+const CaptainProfileUpdatePannel = ({ captain, setCaptain, onClose }) => {
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [formData, setFormData] = useState({
     fullname: {
       firstname: captain?.fullname?.firstname || "",
@@ -14,9 +15,12 @@ const CaptainProfileUpdatePannel = ({ captain, onClose }) => {
     },
     email: captain?.email || "",
     upiId: captain?.upiId || "",
+    dob: captain?.dob || new Date(),
     vehicleInfo: {
       color: captain?.vehicleInfo?.color || "",
       plate: captain?.vehicleInfo?.plate || "",
+      vehicleType: captain?.vehicleInfo?.vehicleType || "",
+      capacity: captain?.vehicleInfo?.capacity || "",
     },
   });
 
@@ -34,7 +38,7 @@ const CaptainProfileUpdatePannel = ({ captain, onClose }) => {
       );
 
       if (response.data.success) {
-        updateCaptain(response.data.captain);
+        setCaptain(response.data.captain);
         onClose();
         toast.success("Profile updated successfully!");
       }
@@ -58,8 +62,10 @@ const CaptainProfileUpdatePannel = ({ captain, onClose }) => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Personal Information */}
-        <fieldset className="border rounded-lg p-4">
-          <legend className="text-lg font-semibold px-2">Personal Info</legend>
+        <fieldset className="rounded-lg p-4 border-2">
+          <legend className="text-lg font-semibold px-3 bg-white border-1 rounded-xl ">
+            Personal Info
+          </legend>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -103,6 +109,19 @@ const CaptainProfileUpdatePannel = ({ captain, onClose }) => {
             </div>
 
             <div>
+              <label className="block text-sm font-medium mb-1">
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                value={formData.dob}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, dob: e.target.value }))
+                }
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium mb-1">Email</label>
               <input
                 type="email"
@@ -129,8 +148,10 @@ const CaptainProfileUpdatePannel = ({ captain, onClose }) => {
         </fieldset>
 
         {/* Vehicle Information */}
-        <fieldset className="border rounded-lg p-4">
-          <legend className="text-lg font-semibold px-2">Vehicle Info</legend>
+        <fieldset className="border-2 rounded-lg p-4">
+          <legend className="text-lg font-semibold px-3 bg-white border-1 rounded-xl ">
+            Vehicle Info
+          </legend>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">
@@ -154,6 +175,42 @@ const CaptainProfileUpdatePannel = ({ captain, onClose }) => {
 
             <div>
               <label className="block text-sm font-medium mb-1">
+                Vehicle Type
+              </label>
+              <input
+                type="text"
+                value={formData.vehicleInfo.vehicleType}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    vehicleInfo: {
+                      ...prev.vehicleInfo,
+                      vehicleType: e.target.value,
+                    },
+                  }))
+                }
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Capacity</label>
+              <input
+                type="text"
+                value={formData.vehicleInfo.capacity}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    vehicleInfo: {
+                      ...prev.vehicleInfo,
+                      capacity: e.target.value,
+                    },
+                  }))
+                }
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">
                 License Plate
               </label>
               <input
@@ -174,6 +231,38 @@ const CaptainProfileUpdatePannel = ({ captain, onClose }) => {
           </div>
         </fieldset>
 
+        {/* Password Change*/}
+
+        <fieldset className="border-2 rounded-lg p-4">
+          <legend className="text-lg font-semibold px-3 bg-white border-1 rounded-xl ">
+            Change Password
+          </legend>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                New Password
+              </label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+              />
+            </div>
+          </div>
+        </fieldset>
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -187,6 +276,7 @@ const CaptainProfileUpdatePannel = ({ captain, onClose }) => {
 
 CaptainProfileUpdatePannel.propTypes = {
   captain: PropTypes.object.isRequired,
+  setCaptain: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 

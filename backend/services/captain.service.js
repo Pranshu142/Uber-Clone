@@ -89,7 +89,7 @@ export const captainAcceptedRideDetailsUpdate = async ({
       });
 
       // Update total earnings
-      captain.totalEarnings += ride.fare;
+      captain.totalEarnings = (captain.totalEarnings + ride.fare).toFixed(2);
 
       // Increment total rides
       captain.totalRides += 1;

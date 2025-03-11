@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 const CaptainProfile = () => {
-  const { captain } = useContext(CaptainDataContext);
+  const { captain, setCaptain } = useContext(CaptainDataContext);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const updationPannel = useRef(null);
@@ -155,9 +155,9 @@ const CaptainProfile = () => {
               <Wallet className="w-6 h-6 mx-auto text-green-500" />
               <div className="mt-2">
                 <div className="font-bold text-xl">
-                  ₹{captain?.totalEarnings}
+                  ₹{Math.trunc(captain?.totalEarnings || 0)}
                 </div>
-                <div className="text-xs text-gray-500">Total Earnings</div>
+                <div className="text-xs text-gray-500">Todays Earnings</div>
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm text-center">
@@ -208,6 +208,7 @@ const CaptainProfile = () => {
       >
         <CaptainProfileUpdatePannel
           captain={captain}
+          setCaptain={setCaptain}
           onClose={() => setIsEditing(false)}
         />
       </div>
