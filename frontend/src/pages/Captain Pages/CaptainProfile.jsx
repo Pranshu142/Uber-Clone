@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CaptainDataContext } from "../../context/CaptainContext";
 import { useGSAP } from "@gsap/react";
+import axios from "axios";
 import gsap from "gsap";
 import CaptainProfileUpdatePannel from "../../components/Captain Components/CaptainProfileUpdatePannel";
 import {
@@ -14,16 +15,36 @@ import {
   Car,
   Wallet,
   Star,
+  DollarSign,
 } from "lucide-react";
 
 const CaptainProfile = () => {
   const { captain, setCaptain } = useContext(CaptainDataContext);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const updationPannel = useRef(null);
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    fullname: {
+      firstname: captain?.fullname?.firstname || "",
+      lastname: captain?.fullname?.lastname || "",
+    },
+    email: captain?.email || "",
+    upiId: captain?.upiId || "",
+    mobileNumber: captain?.mobileNumber || "",
+    dob: captain?.dob || "",
+    vehicleInfo: {
+      color: captain?.vehicleInfo?.color || "",
+      plate: captain?.vehicleInfo?.plate || "",
+      vehicleType: captain?.vehicleInfo?.vehicleType || "",
+      capacity: captain?.vehicleInfo?.capacity || "",
+    },
+  });
 
   useEffect(() => {
+    console.log(captain);
     if (captain) {
       setLoading(false);
     }
@@ -48,6 +69,31 @@ const CaptainProfile = () => {
       });
     }
   }, [isEditing]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/captains/profile/update`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("captain-token")}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        setCaptain(response.data.captain);
+        setIsEditing(false);
+        toast.success("Profile updated successfully!");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error(error.response?.data?.message || "Failed to update profile");
+    }
+  };
 
   if (loading) {
     return (
@@ -127,13 +173,18 @@ const CaptainProfile = () => {
               },
               {
                 icon: <PhoneIcon size={24} />,
-                label: "UPI ID",
+                label: "Mobile Number",
+                value: captain?.mobileNumber,
+              },
+              {
+                icon: <DollarSign size={24} />,
+                label: "UPI Id",
                 value: captain?.upiId,
               },
               {
                 icon: <Car size={24} />,
                 label: "Vehicle Info",
-                value: `${captain?.vehicleInfo?.color} ${captain?.vehicleInfo?.vehicleType} (${captain?.vehicleInfo?.plate})`,
+                value: `${captain?.vehicleInfo?.color} ${captain?.vehicleInfo?.vehicleType} (${captain?.vehicleInfo?.plate}) ${captain?.vehicleInfo?.capacity}`,
               },
             ].map((item, index) => (
               <div
@@ -144,7 +195,9 @@ const CaptainProfile = () => {
                   {item.icon}
                   <span className="font-medium">{item.label}</span>
                 </div>
-                <span className="text-gray-600 break-all">{item.value}</span>
+                <span className="text-gray-600 break-all text-base font font-semibold">
+                  {item.value}
+                </span>
               </div>
             ))}
           </div>
@@ -207,8 +260,13 @@ const CaptainProfile = () => {
         className="fixed h-0 bottom-0 w-screen bg-gray-200"
       >
         <CaptainProfileUpdatePannel
-          captain={captain}
-          setCaptain={setCaptain}
+          handleSubmit={handleSubmit}
+          formData={formData}
+          setFormData={setFormData}
+          newPassword={newPassword}
+          confirmPassword={confirmPassword}
+          setNewPassword={setNewPassword}
+          setConfirmPassword={setConfirmPassword}
           onClose={() => setIsEditing(false)}
         />
       </div>

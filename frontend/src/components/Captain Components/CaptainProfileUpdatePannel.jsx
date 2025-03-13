@@ -1,53 +1,16 @@
-import { useState } from "react";
-import { X } from "lucide-react";
 import PropTypes from "prop-types";
+import { X } from "lucide-react";
 
-import axios from "axios";
-import { toast } from "react-toastify";
-
-const CaptainProfileUpdatePannel = ({ captain, setCaptain, onClose }) => {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [formData, setFormData] = useState({
-    fullname: {
-      firstname: captain?.fullname?.firstname || "",
-      lastname: captain?.fullname?.lastname || "",
-    },
-    email: captain?.email || "",
-    upiId: captain?.upiId || "",
-    dob: captain?.dob || new Date(),
-    vehicleInfo: {
-      color: captain?.vehicleInfo?.color || "",
-      plate: captain?.vehicleInfo?.plate || "",
-      vehicleType: captain?.vehicleInfo?.vehicleType || "",
-      capacity: captain?.vehicleInfo?.capacity || "",
-    },
-  });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/captains/profile/update`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("captain-token")}`,
-          },
-        }
-      );
-
-      if (response.data.success) {
-        setCaptain(response.data.captain);
-        onClose();
-        toast.success("Profile updated successfully!");
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      toast.error(error.response?.data?.message || "Failed to update profile");
-    }
-  };
-
+const CaptainProfileUpdatePannel = ({
+  handleSubmit,
+  formData,
+  setFormData,
+  newPassword,
+  confirmPassword,
+  setNewPassword,
+  setConfirmPassword,
+  onClose,
+}) => {
   return (
     <div className="p-3 max-h-screen overflow-y-auto">
       <header className="flex justify-between items-center p-2">
@@ -108,6 +71,22 @@ const CaptainProfileUpdatePannel = ({ captain, setCaptain, onClose }) => {
               </div>
             </div>
 
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Mobile Number
+              </label>
+              <input
+                type="number"
+                value={formData.mobileNumber}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    mobileNumber: e.target.value,
+                  }))
+                }
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2"
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium mb-1">
                 Date of Birth
@@ -275,9 +254,14 @@ const CaptainProfileUpdatePannel = ({ captain, setCaptain, onClose }) => {
 };
 
 CaptainProfileUpdatePannel.propTypes = {
-  captain: PropTypes.object.isRequired,
-  setCaptain: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  formData: PropTypes.object.isRequired,
+  setFormData: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  newPassword: PropTypes.string.isRequired,
+  confirmPassword: PropTypes.string.isRequired,
+  setNewPassword: PropTypes.func.isRequired,
+  setConfirmPassword: PropTypes.func.isRequired,
 };
 
 export default CaptainProfileUpdatePannel;

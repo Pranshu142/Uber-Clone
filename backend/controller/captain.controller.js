@@ -4,7 +4,7 @@ import createCaptain, {
 } from "../services/captain.service.js";
 import { validationResult } from "express-validator";
 import { captainAcceptedRideDetailsUpdate } from "../services/captain.service.js";
-import Socket from "../socket.js";
+import { updateProfileDetails } from "../services/rider.service.js";
 
 export default async (req, res) => {
   const errors = validationResult(req);
@@ -101,5 +101,29 @@ export const captainRideDetailsUpdation = async (req, res) => {
   } catch (error) {
     console.error("Error starting ride:", error);
     return res.status(500).json({ error: "Failed to start ride" });
+  }
+};
+
+export const captainProfileDataUpdate = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    // Add your profile update logic here
+    const profileData = req.body;
+    const captainId = req.captain._id;
+    const updatedCaptainProfile = await updateProfileDetails({
+      profileData,
+      captainId,
+    });
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      captain: updatedCaptainProfile,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update profile" });
   }
 };
