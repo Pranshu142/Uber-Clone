@@ -1,10 +1,9 @@
 import captainModel from "../models/captain.models.js";
 import createCaptain, {
   createBlackListTokens,
+  updateProfileDetails,
 } from "../services/captain.service.js";
 import { validationResult } from "express-validator";
-import { captainAcceptedRideDetailsUpdate } from "../services/captain.service.js";
-import { updateProfileDetails } from "../services/rider.service.js";
 
 export default async (req, res) => {
   const errors = validationResult(req);
@@ -69,18 +68,28 @@ export const loginCaptain = async (req, res, next) => {
   res.status(200).json({ message: "captain login successful", captain, token });
 };
 
-export const logout = async (req, res, next) => {
-  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+export const captainProfileDataUpdate = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-  await createBlackListTokens({ token });
-  res.clearCookie("token");
-  res.status(200).json({ message: "captain logout successful" });
-};
-export const captainProfile = (req, res, next) => {
-  res
-    .status(200)
-    .json({ message: "captain logged in successfully", captain: req.captain });
-  // console.log("🚀 ~ captainProfile ~ req.captain:", req.captain);
+  try {
+    // Add your profile update logic here
+    const profileData = req.body;
+    const captainId = req.captain._id;
+    const updatedCaptainProfile = await updateProfileDetails({
+      profileData,
+      captainId,
+    });
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      captain: updatedCaptainProfile,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update profile" });
+  }
 };
 
 export const captainRideDetailsUpdation = async (req, res) => {
@@ -104,26 +113,16 @@ export const captainRideDetailsUpdation = async (req, res) => {
   }
 };
 
-export const captainProfileDataUpdate = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+export const logout = async (req, res, next) => {
+  const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
-  try {
-    // Add your profile update logic here
-    const profileData = req.body;
-    const captainId = req.captain._id;
-    const updatedCaptainProfile = await updateProfileDetails({
-      profileData,
-      captainId,
-    });
-
-    res.status(200).json({
-      message: "Profile updated successfully",
-      captain: updatedCaptainProfile,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to update profile" });
-  }
+  await createBlackListTokens({ token });
+  res.clearCookie("token");
+  res.status(200).json({ message: "captain logout successful" });
+};
+export const captainProfile = (req, res, next) => {
+  res
+    .status(200)
+    .json({ message: "captain logged in successfully", captain: req.captain });
+  // console.log("🚀 ~ captainProfile ~ req.captain:", req.captain);
 };

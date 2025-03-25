@@ -93,9 +93,9 @@ const CaptainProfileUpdatePannel = ({
               </label>
               <input
                 type="date"
-                value={formData.dob}
+                value={formData.DOB}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, dob: e.target.value }))
+                  setFormData((prev) => ({ ...prev, DOB: e.target.value }))
                 }
                 className="w-full px-3 py-2 border rounded-lg focus:ring-2"
               />
@@ -242,10 +242,7 @@ const CaptainProfileUpdatePannel = ({
             </div>
           </div>
         </fieldset>
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
-        >
+        <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
           Save Changes
         </button>
       </form>

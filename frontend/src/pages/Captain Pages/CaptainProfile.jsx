@@ -16,6 +16,7 @@ import {
   Wallet,
   Star,
   DollarSign,
+  User2,
 } from "lucide-react";
 
 const CaptainProfile = () => {
@@ -34,7 +35,7 @@ const CaptainProfile = () => {
     email: captain?.email || "",
     upiId: captain?.upiId || "",
     mobileNumber: captain?.mobileNumber || "",
-    dob: captain?.dob || "",
+    DOB: captain?.DOB || "",
     vehicleInfo: {
       color: captain?.vehicleInfo?.color || "",
       plate: captain?.vehicleInfo?.plate || "",
@@ -70,8 +71,24 @@ const CaptainProfile = () => {
     }
   }, [isEditing]);
 
+  const ageCalculation = (dob) => {
+    const dobDate = new Date(dob);
+    const currentDate = new Date();
+    const age = currentDate.getFullYear() - dobDate.getFullYear();
+    const month = currentDate.getMonth() - dobDate.getMonth();
+
+    if (
+      month < 0 ||
+      (month === 0 && currentDate.getDate() < dobDate.getDate())
+    ) {
+      return age - 1;
+    }
+    return age;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await axios.put(
@@ -84,7 +101,7 @@ const CaptainProfile = () => {
         }
       );
 
-      if (response.data.success) {
+      if (response.status === 200) {
         setCaptain(response.data.captain);
         setIsEditing(false);
         toast.success("Profile updated successfully!");
@@ -92,6 +109,8 @@ const CaptainProfile = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error(error.response?.data?.message || "Failed to update profile");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -172,6 +191,11 @@ const CaptainProfile = () => {
                 value: captain?.email,
               },
               {
+                icon: <User2 size={24} />,
+                label: "Date of Birth",
+                value: captain?.DOB,
+              },
+              {
                 icon: <PhoneIcon size={24} />,
                 label: "Mobile Number",
                 value: captain?.mobileNumber,
@@ -196,7 +220,9 @@ const CaptainProfile = () => {
                   <span className="font-medium">{item.label}</span>
                 </div>
                 <span className="text-gray-600 break-all text-base font font-semibold">
-                  {item.value}
+                  {item.label === "Date of Birth"
+                    ? ageCalculation(item.value)
+                    : item.value}
                 </span>
               </div>
             ))}

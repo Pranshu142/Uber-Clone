@@ -1,7 +1,6 @@
 import captainModel from "../models/captain.models.js";
 import blacklistedToken from "../models/blacklistedToken.models.js";
 import rideModel from "../models/ride.model.js";
-import { updateProfileDetails } from "./rider.service.js";
 
 const createCaptain = async ({
   firstname,
@@ -65,6 +64,28 @@ export const createBlackListTokens = async ({ token }) => {
     console.error("Error creating blacklist token:", error);
   }
 };
+
+export const updateProfileDetails = async ({ profileData, captainId }) => {
+  try {
+    if (!captainId)
+      return res.status(404).json({ error: "captain id is required" });
+    const updatedCaptain = await captainModel.findByIdAndUpdate(
+      captainId,
+      {
+        ...profileData,
+      },
+      {
+        new: true,
+      }
+    );
+
+    return updatedCaptain;
+  } catch (error) {
+    console.log("Error updating captain profile data");
+    return res.status(500).json({ error: error });
+  }
+};
+
 export const captainAcceptedRideDetailsUpdate = async ({
   rideId,
   captainId,
@@ -103,27 +124,6 @@ export const captainAcceptedRideDetailsUpdate = async ({
     return captain;
   } catch (error) {
     console.error("Error updating captain availability:", error);
-  }
-};
-
-export const updateProfileDetails = async ({ profileData, captainId }) => {
-  try {
-    if (!captainId)
-      return res.status(404).json({ error: "captain id is required" });
-    const updatedCaptain = await captainModel.findByIdAndUpdate(
-      captainId,
-      {
-        ...profileData,
-      },
-      {
-        new: true,
-      }
-    );
-
-    return updatedCaptain;
-  } catch (error) {
-    console.log("Error updating captain profile data");
-    return res.status(500).json({ error: error });
   }
 };
 

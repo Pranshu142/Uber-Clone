@@ -15,7 +15,6 @@ export default async (req, res) => {
   const { fullname, email, password } = req.body;
 
   const userAlreadyExists = await riderModel.findOne({ email: email });
-  console.log(userAlreadyExists);
   if (userAlreadyExists) {
     return res.status(400).json({ errors: "User already exists" });
   }
@@ -48,7 +47,6 @@ export const loginRider = async (req, res, next) => {
   const { email, password } = req.body;
   const rider = await riderModel.findOne({ email: email }).select("+password");
 
-  console.log("🚀 ~ loginRider ~ rider:", rider);
   if (!rider) {
     return res.status(401).json({ errors: "Invalid email or password" });
   }
@@ -64,8 +62,6 @@ export const loginRider = async (req, res, next) => {
   res.cookie("token", token, {
     httpOnly: true,
   });
-
-  console.log(req.cookies.token);
 
   res.status(200).json({ message: "Rider login successfully", rider, token });
 };
@@ -92,9 +88,8 @@ export const profileUpdateController = async (req, res) => {
   }
 
   const profileData = req.body;
-  console.log("🚀 ~ profileUpdateController ~ profileData:", profileData);
+
   const riderId = req.rider._id;
-  // console.log("🚀 ~ profileUpdateController ~ riderId:", riderId);
 
   try {
     const rider = await updateProfileDetails({ profileData, riderId });

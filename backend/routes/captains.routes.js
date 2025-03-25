@@ -7,6 +7,7 @@ import registerCaptain, {
   captainProfile,
   logout,
   captainRideDetailsUpdation,
+  captainProfileDataUpdate,
 } from "../controller/captain.controller.js";
 
 /* POST register a new rider */
@@ -68,45 +69,44 @@ router.put(
   captainAuth,
   [
     body("fullname.firstname")
+      .optional()
       .isString()
       .trim()
-      .optional()
       .withMessage("First name must be a string"),
     body("fullname.lastname")
+      .optional()
       .isString()
       .trim()
-      .optional()
       .withMessage("Last name must be a string"),
     body("email").isEmail().withMessage("Email must be in correct syntax"),
     body("phone")
       .optional()
       .matches(/^\+?[1-9]\d{1,14}$/)
       .withMessage("Phone must be a valid number"),
-
-    body("age").optional().isDate(),
+    body("age").optional().isISO8601().toDate(),
     body("upiId")
+      .optional()
       .isString()
       .trim()
-      .optional()
       .withMessage("UpiId must be a string"),
-
-    body("vehicleInfo.color")
-      .isLength({ min: 3 })
-      .withMessage("Color must be at least 3 characters long"),
-    body("vehicleInfo.plate")
-      .isLength({ min: 3 })
-      .withMessage("Plate must be at least 3 characters long"),
-    body("vehicleInfo.capacity")
-      .isInt({ min: 1 })
-      .withMessage("Capacity must be at least 1"),
-    body("vehicleInfo.vehicleType")
-      .isIn(["car", "motorcycle", "auto"])
-      .withMessage("Invalid vehicleInfo type"),
+    body("vehicleInfo")
+      .optional()
+      .custom((val) => {
+        if (val.color?.length < 3)
+          throw new Error("Color must be at least 3 characters long");
+        if (val.plate?.length < 3)
+          throw new Error("Plate must be at least 3 characters long");
+        if (!val.capacity || val.capacity < 1)
+          throw new Error("Capacity must be at least 1");
+        if (!["car", "motorcycle", "auto"].includes(val.vehicleType)) {
+          throw new Error("Invalid vehicle type");
+        }
+        return true;
+      }),
   ],
   captainProfileDataUpdate
 );
 
-router.post("/logout", captainAuth, logout);
 router.post(
   "/captain-ride-details-updation",
   captainAuth,
@@ -116,4 +116,7 @@ router.post(
   ],
   captainRideDetailsUpdation
 );
+
+router.post("/logout", captainAuth, logout);
+
 export default router;
