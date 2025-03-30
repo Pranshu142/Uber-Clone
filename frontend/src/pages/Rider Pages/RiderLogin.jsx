@@ -19,6 +19,7 @@ const UserLogin = () => {
       email,
       password,
     };
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/riders/login`,
@@ -28,6 +29,7 @@ const UserLogin = () => {
         const data = response.data;
 
         setRider(data.rider);
+        // setTimeout(() => console.log(rider), 10000);
         localStorage.setItem("token", data.token);
         navigate("/rider-home");
       }

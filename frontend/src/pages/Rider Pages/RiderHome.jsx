@@ -105,8 +105,9 @@ const RiderHome = () => {
 
   const { socket } = useContext(SocketContext);
   const { rider } = useContext(RiderDataContext);
+  console.log("🚀 ~ RiderHome ~ rider:", rider);
   const navigate = useNavigate();
-  console.log(rider);
+
   useEffect(() => {
     // console.log(socket);
     socket.emit("join", {
