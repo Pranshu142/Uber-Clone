@@ -31,6 +31,7 @@ import { UserRound } from "lucide-react";
  * RiderHome Component
  * Main component for the rider's home screen
  */
+
 const RiderHome = () => {
   // Panel states
   const [panels, setPanels] = useState({
@@ -203,9 +204,8 @@ const RiderHome = () => {
           },
         }
       );
-      // console.log(response.data);
+
       setSuggestions(response.data);
-      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
     }
