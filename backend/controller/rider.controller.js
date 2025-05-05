@@ -11,7 +11,7 @@ export default async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  // Extract fields
+  //  Extract fields
   const { fullname, email, password } = req.body;
 
   const userAlreadyExists = await riderModel.findOne({ email: email });
