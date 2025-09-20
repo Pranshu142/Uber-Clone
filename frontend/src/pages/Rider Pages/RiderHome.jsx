@@ -208,6 +208,8 @@ const RiderHome = () => {
       setSuggestions(response.data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
+      setSuggestions([]);
+      alert("Failed to fetch location suggestions. Please try again.");
     }
   };
 

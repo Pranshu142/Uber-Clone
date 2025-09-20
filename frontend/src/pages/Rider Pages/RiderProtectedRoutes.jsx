@@ -51,6 +51,7 @@ const RiderProtectedRoutes = ({ children }) => {
   // Show loading indicator if rider verification is ongoing
   return token ? <>{children}</> : <div>Loading...</div>;
 };
+
 RiderProtectedRoutes.propTypes = {
   children: PropTypes.node.isRequired,
 };

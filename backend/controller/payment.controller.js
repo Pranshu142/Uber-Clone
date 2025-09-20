@@ -10,7 +10,6 @@ const initiatePayment = async (req, res) => {
     }
 
     // Find the ride and populate captain details
-    const ride = await findRide(rideId);
     if (!ride) {
       return res.status(404).json({ error: "Ride not found" });
     }
@@ -21,7 +20,7 @@ const initiatePayment = async (req, res) => {
     }
 
     // Use the captain's UPI ID (ensure you add this field to the captain model)
-    const upiId = captain.upiId || "9305709783@axl"; // Replace with a proper default or error out
+    const upiId = "9305709783@axl"; // Replace with a proper default or error out
     const amount = ride.fare;
     const payeeName = `${captain.fullname.firstname} ${captain.fullname.lastname}`;
     const note = encodeURIComponent(`Payment for ride ${ride._id}`);
